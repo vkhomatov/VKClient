@@ -1,0 +1,78 @@
+//
+//  FriendPicImageView.swift
+//  MH VK Client 1.0
+//
+//  Created by Vit on 23/09/2019.
+//  Copyright © 2019 Macrohard. All rights reserved.
+//
+
+import UIKit
+
+class FriendPicImageView: UIImageView {
+
+    /*
+    // Only override draw() if you perform custom drawing.
+    // An empty implementation adversely affects performance during animation.
+    override func draw(_ rect: CGRect) {
+        // Drawing code
+    }
+    */
+    
+    @IBInspectable var myRadius: CGFloat = 8.0
+    @IBInspectable var myOpacity: Float = 0.5
+    @IBInspectable var myColor: UIColor = UIColor.black
+    
+    
+       var inset: CGFloat = 0
+    {
+        didSet
+        {
+            self.layoutSubviews()
+        }
+    }
+    
+    let myShapeLayer = CAShapeLayer()
+    
+    
+    
+    override func awakeFromNib() {
+        
+        self.layer.masksToBounds = true
+
+        
+        myShapeLayer.isOpaque = false
+        myShapeLayer.fillColor = UIColor(white: 1, alpha: 1).cgColor
+        myShapeLayer.fillRule = CAShapeLayerFillRule.evenOdd
+        
+        self.layer.addSublayer(myShapeLayer)
+
+        
+        let frame = self.layer.bounds
+        myShapeLayer.frame = frame
+        let smallest = min(frame.size.height, frame.size.width) - inset
+        let square = CGRect(
+            x: (frame.size.width - smallest)/2.0,
+            y: (frame.size.height - smallest)/2.0,
+            width: smallest,
+            height: smallest)
+        let path = UIBezierPath(rect: frame)
+        path.append(UIBezierPath(ovalIn:  square))
+        path.close()
+        myShapeLayer.path = path.cgPath
+        self.layer.shadowPath = path.cgPath
+        
+       // тень саблеера не работает
+        myShapeLayer.shadowColor = myColor.cgColor
+        myShapeLayer.shadowOpacity = myOpacity
+        myShapeLayer.shadowOffset = .zero
+        myShapeLayer.shadowRadius = myRadius
+    //    myShapeLayer.shadowPath = path.cgPath
+         
+        
+        
+
+
+    }
+    
+ 
+}

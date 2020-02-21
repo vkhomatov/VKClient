@@ -1,0 +1,6 @@
+framework module Pods_MH_VK_Client_1_0 {
+  umbrella header "Pods-MH VK Client 1.0-umbrella.h"
+
+  export *
+  module * { export * }
+}
