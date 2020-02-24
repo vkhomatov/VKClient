@@ -73,16 +73,8 @@ class NewsCell: UITableViewCell {
         shareCountLabel.text = "0"
         like = false
         
-        //   likeButton.titleLabel?.textColor = .red
-        
-        
         
     }
     
-    /*    override func setSelected(_ selected: Bool, animated: Bool) {
-     super.setSelected(selected, animated: animated)
-     
-     // Configure the view for the selected state
-     } */
-    
+  
 }

@@ -10,6 +10,7 @@ import UIKit
 
 struct News {
     
-    var news: [(name: String, pic: UIImage?)]
+    var news: [(name: String, date: String, text: String, pic: UIImage?)]
+  //  var newsAction: [(likeUser: Bool, likes: Int, comments: Int, reposts: Int, views: Int)]
     
 }

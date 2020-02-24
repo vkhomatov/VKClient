@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		58041DC72402459F0081E5E5 /* NewsHeadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58041DC62402459F0081E5E5 /* NewsHeadCell.swift */; };
+		58041DC9240245BF0081E5E5 /* NewsTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58041DC8240245BF0081E5E5 /* NewsTextCell.swift */; };
+		58041DCB240245D90081E5E5 /* NewsPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58041DCA240245D90081E5E5 /* NewsPhotoCell.swift */; };
+		58041DCD240245FA0081E5E5 /* NewsActionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58041DCC240245FA0081E5E5 /* NewsActionsCell.swift */; };
 		580C787623A4E7A000EE0A2F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580C787523A4E7A000EE0A2F /* NetworkService.swift */; };
 		580C787823A4F50A00EE0A2F /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580C787723A4F50A00EE0A2F /* Session.swift */; };
 		580E4B622338D69A003CFA10 /* FriendPicImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580E4B612338D69A003CFA10 /* FriendPicImageView.swift */; };
@@ -38,6 +42,7 @@
 		58AAD5AE232A39CC00FB34AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58AAD5AD232A39CC00FB34AF /* Assets.xcassets */; };
 		58AAD5B1232A39CC00FB34AF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58AAD5AF232A39CC00FB34AF /* LaunchScreen.storyboard */; };
 		58BD55B523339F4D00243805 /* FriendAlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BD55B423339F4D00243805 /* FriendAlbumCell.swift */; };
+		58F3F2002402F0B300BD4B93 /* NewsActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F1FF2402F0B300BD4B93 /* NewsActions.swift */; };
 		991E7F0EC482CE2D7D2436C2 /* Pods_MH_VK_Client_1_0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21689E9332BAFBC30C786D6F /* Pods_MH_VK_Client_1_0.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +50,10 @@
 		21689E9332BAFBC30C786D6F /* Pods_MH_VK_Client_1_0.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MH_VK_Client_1_0.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		450FB74416ACF6D6843D5D02 /* Pods-MH VK Client 1.0.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MH VK Client 1.0.release.xcconfig"; path = "Target Support Files/Pods-MH VK Client 1.0/Pods-MH VK Client 1.0.release.xcconfig"; sourceTree = "<group>"; };
 		4E70D2BACC35EAC385BA433B /* Pods-MH VK Client 1.0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MH VK Client 1.0.debug.xcconfig"; path = "Target Support Files/Pods-MH VK Client 1.0/Pods-MH VK Client 1.0.debug.xcconfig"; sourceTree = "<group>"; };
+		58041DC62402459F0081E5E5 /* NewsHeadCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsHeadCell.swift; sourceTree = "<group>"; };
+		58041DC8240245BF0081E5E5 /* NewsTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTextCell.swift; sourceTree = "<group>"; };
+		58041DCA240245D90081E5E5 /* NewsPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsPhotoCell.swift; sourceTree = "<group>"; };
+		58041DCC240245FA0081E5E5 /* NewsActionsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsActionsCell.swift; sourceTree = "<group>"; };
 		580C787523A4E7A000EE0A2F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		580C787723A4F50A00EE0A2F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		580E4B612338D69A003CFA10 /* FriendPicImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPicImageView.swift; sourceTree = "<group>"; };
@@ -78,6 +87,7 @@
 		58AAD5B0232A39CC00FB34AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		58AAD5B2232A39CC00FB34AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58BD55B423339F4D00243805 /* FriendAlbumCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAlbumCell.swift; sourceTree = "<group>"; };
+		58F3F1FF2402F0B300BD4B93 /* NewsActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsActions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,8 +130,8 @@
 				5886790A234A8663004F2313 /* FriendPhotosController.swift */,
 				583B5988232F079600375F4A /* MyGroupController.swift */,
 				583B598A232F07D100375F4A /* AllGroupController.swift */,
-				588C9F0123441A8D007DB7BD /* NewsController.swift */,
 				5882146A239A4A9A00EA1CEA /* CustomNavigationController.swift */,
+				588C9F0123441A8D007DB7BD /* NewsController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -167,6 +177,7 @@
 				58821468239A1F0A00EA1CEA /* Animator.swift */,
 				5882146C239A4AF700EA1CEA /* CustomPop+PopAnimators.swift */,
 				588C9F05234420F2007DB7BD /* News.swift */,
+				58F3F1FF2402F0B300BD4B93 /* NewsActions.swift */,
 				5880CE0323A791BF0081F4E5 /* GroupVK.swift */,
 				5880CE0123A7837E0081F4E5 /* FriendVK.swift */,
 				5881B89923CC6FA40046A9EC /* FriendAlbum.swift */,
@@ -190,6 +201,10 @@
 				58483E8C23332F67007B773E /* GroupCell.swift */,
 				58483E93233393A0007B773E /* FriendsCell.swift */,
 				58BD55B423339F4D00243805 /* FriendAlbumCell.swift */,
+				58041DC62402459F0081E5E5 /* NewsHeadCell.swift */,
+				58041DC8240245BF0081E5E5 /* NewsTextCell.swift */,
+				58041DCA240245D90081E5E5 /* NewsPhotoCell.swift */,
+				58041DCC240245FA0081E5E5 /* NewsActionsCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -351,12 +366,15 @@
 				580E4B622338D69A003CFA10 /* FriendPicImageView.swift in Sources */,
 				58483E94233393A0007B773E /* FriendsCell.swift in Sources */,
 				58AAD5A9232A39CB00FB34AF /* LoginViewController.swift in Sources */,
+				58041DCD240245FA0081E5E5 /* NewsActionsCell.swift in Sources */,
 				58821469239A1F0A00EA1CEA /* Animator.swift in Sources */,
 				5881B89A23CC6FA40046A9EC /* FriendAlbum.swift in Sources */,
 				5880CE0423A791BF0081F4E5 /* GroupVK.swift in Sources */,
 				583B598B232F07D100375F4A /* AllGroupController.swift in Sources */,
+				58041DC72402459F0081E5E5 /* NewsHeadCell.swift in Sources */,
 				58371AA323456AF10079C7AD /* CommunitesPicImageView.swift in Sources */,
 				580C787623A4E7A000EE0A2F /* NetworkService.swift in Sources */,
+				58041DCB240245D90081E5E5 /* NewsPhotoCell.swift in Sources */,
 				588C9F0423441B6A007DB7BD /* NewsCell.swift in Sources */,
 				5882146B239A4A9A00EA1CEA /* CustomNavigationController.swift in Sources */,
 				5886790B234A8663004F2313 /* FriendPhotosController.swift in Sources */,
@@ -370,8 +388,10 @@
 				585902C0233C12DC000FBE2A /* HeartView​.swift in Sources */,
 				583B5989232F079600375F4A /* MyGroupController.swift in Sources */,
 				5880CE0223A7837E0081F4E5 /* FriendVK.swift in Sources */,
+				58F3F2002402F0B300BD4B93 /* NewsActions.swift in Sources */,
 				5831AA6F23DD43DF001BEAB2 /* RealmService.swift in Sources */,
 				5882146D239A4AF700EA1CEA /* CustomPop+PopAnimators.swift in Sources */,
+				58041DC9240245BF0081E5E5 /* NewsTextCell.swift in Sources */,
 				58BD55B523339F4D00243805 /* FriendAlbumCell.swift in Sources */,
 				58AAD5A7232A39CB00FB34AF /* AppDelegate.swift in Sources */,
 			);
