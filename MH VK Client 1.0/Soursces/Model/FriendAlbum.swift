@@ -21,8 +21,6 @@ class FriendAlbum: Object {
     
     let photos = List<FriendPhoto>()
     
-   // var  = LinkingObjects(fromType: FriendVK.self, property: "weathers")
-
     convenience init(from json: JSON) {
         self.init()
 
@@ -35,7 +33,6 @@ class FriendAlbum: Object {
 
         if self.id < 0  {
             self.idRealm += self.ownerId
-          //  print("!!!!!!!!!!!!!!!! СЛУЖЕБНЫЙ АЛЬБОМ !!!!!!!!!!!!!! FriendAlbum.swift \(self.idRealm)")
         }
     }
     

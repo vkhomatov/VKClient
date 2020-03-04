@@ -55,7 +55,7 @@ class LoginViewController: UIViewController {
         if loadCount >= 2 {
             
             Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
-
+            
             guard let savedUsername = loginTextField.text else { return }
             guard let savedPassword = passwordTextField.text else { return }
             
@@ -97,52 +97,20 @@ class LoginViewController: UIViewController {
     
     func Loading(alpha : CGFloat, duration : Double, delay: Double, speed: Double) {
         
-//        UIView.animate(withDuration: duration, delay: delay, animations: {
-//            self.load1Label.alpha = 1
-//        }) { completed in
-//            UIView.animate(withDuration: delay) {
-//                self.load2Label.alpha = 1
-//            }
-//        }
-//
-//        UIView.animate(withDuration: duration, delay: delay + speed*2, animations: {
-//            self.load3Label.alpha = 1
-//        }) { completed in
-//            UIView.animate(withDuration: delay) {
-//                self.load1Label.alpha = alpha
-//                self.load2Label.alpha = alpha
-//                self.load3Label.alpha = alpha
-//            }
-//        }
         
         UIView.animate(withDuration: duration, delay: 0.2, options: [.repeat, .autoreverse], animations: {
-                    self.load1Label.alpha = 1
-                })
+            self.load1Label.alpha = 1
+        })
         
         
         UIView.animate(withDuration: duration, delay: 0.4,  options: [.repeat, .autoreverse], animations: {
-                          self.load2Label.alpha = 1
-                      })
+            self.load2Label.alpha = 1
+        })
         
         
         UIView.animate(withDuration: duration, delay: 0.8,  options: [.repeat, .autoreverse], animations: {
             self.load3Label.alpha = 1
         })
-        
-//        UIView.animate(withDuration: duration, delay: delay, animations: {
-//                           self.load1Label.alpha = 1
-//                       })
-//
-//
-//               UIView.animate(withDuration: duration, delay: delay*2, animations: {
-//                                 self.load2Label.alpha = 1
-//                             })
-//
-//
-//               UIView.animate(withDuration: duration, delay: delay*3, animations: {
-//                   self.load3Label.alpha = 1
-//               })
-//
         
         
     }
@@ -151,12 +119,6 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-//        view.addSubview(view1)
-//        view.addSubview(view2)
-//        view.addSubview(view3)
-
-
         
         titleLabel.text = "Enter your VK account"
         loginLabel.text = "Login"
@@ -180,7 +142,7 @@ class LoginViewController: UIViewController {
         components.path = "/authorize"
         components.queryItems = [
             URLQueryItem(name: "client_id", value: "7246951"),
-            URLQueryItem(name: "scope", value: "262150"),
+            URLQueryItem(name: "scope", value: "336918"), //"262150"
             URLQueryItem(name: "display", value: "mobile"),
             URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
             URLQueryItem(name: "response_type", value: "token"),
@@ -207,7 +169,7 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-      //  Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
+        //  Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown), name: UIResponder.keyboardDidShowNotification, object: nil)
         
@@ -262,7 +224,7 @@ extension LoginViewController: WKNavigationDelegate {
         loadCount += 1
         
         if loadCount >= 2 {
-           // Loading(alpha: 1, duration: 0.8, delay: 0.8, speed: 0.8)
+            // Loading(alpha: 1, duration: 0.8, delay: 0.8, speed: 0.8)
             print("Страница загружена \(webView.url!)")}
     }
     
@@ -276,7 +238,7 @@ extension LoginViewController: WKNavigationDelegate {
                     loginOk = false
                     print("ДОСТУП С АККАУНТУ НЕ ПОЛУЧЕН")
                     showEnterError()}
-            return
+                return
         }
         
         print("ДОСТУП С АККАУНТУ ПОЛУЧЕН")

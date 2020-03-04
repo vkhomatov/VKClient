@@ -16,33 +16,10 @@ class FriendAlbumsController: UICollectionViewController {
     var activeAlbum = FriendAlbum()
     
     var albumsToken: NotificationToken?
-
+    
     
     //чтение списка альбомов выбранного друга из базы
     private lazy var albumsFromRealm: Results<FriendAlbum> = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", activeFriend.id)
-    
-    
-    
-//    func pairTableAndRealm() {
-//          //  guard let realm = try? Realm() else { return }
-//          //  friends = realm.objects(FriendVK.self)
-//            albumsToken = self.albumsFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
-//                guard let collectionView = self?.collectionView else { return }
-//                switch changes {
-//                case .initial:
-//                    collectionView.reloadData()
-//                case .update(_, let deletion, let insertion, let modification):
-//                    print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ")
-//                    //collectionView.be
-//                    collectionView.insertRows(at: insertion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-//                    collectionView.deleteRows(at: deletion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-//                    collectionView.reloadRows(at: modification.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-//                   // collectionView.endUpdates()
-//                case .error(let error):
-//                    fatalError("\(error)")
-//                }
-//            }
-//        }
     
     
     override func viewDidLoad() {
@@ -70,53 +47,41 @@ class FriendAlbumsController: UICollectionViewController {
                     
                 }
                 
-               
                 
-//                DispatchQueue.main.async {
-//                    self.collectionView.reloadData()
-//                }
-//
-               
             case let .failure(error):
                 print("ОШИБКА ПОЛУЧЕНИЕ СПИСКА АЛЬБОМОВ ИЗ VK \(error)")
             }
         }
         
         //ставим observer на БД
-                       self.albumsToken = self.albumsFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
-                                       guard let collectionView = self?.collectionView else { return }
-                                       switch changes {
-                                       case .initial:
-                                           collectionView.reloadData()
-                                       case .update://(_, let deletion, let insertion, let modification):
-                                           
-                                           guard let self = self else { return }
-                                           print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ АЛЬБОМЫ")
-                                           
-                                           //self!.friendsVK = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendVK.self)
-                                           // сохраняем в память новую версию данных из БД
-                                          // self.mySortFriends = self.friendsVK.sorted(by: <)
-                                          // self.mySortFriends = friends
-                                           
-                                          // self.FriendSetup()
-                                           
-                    //считываем данные из базы для размещения во вью
-                                   self.albumsFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", self.activeFriend.id)
-                                           
-                                           self.collectionView.reloadData()
-                                                       
-                                       case .error(let error):
-                                           fatalError("\(error)")
-                                       }
-                       }
-                       
+        self.albumsToken = self.albumsFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
+            guard let collectionView = self?.collectionView else { return }
+            switch changes {
+            case .initial:
+                collectionView.reloadData()
+            case .update://(_, let deletion, let insertion, let modification):
+                
+                guard let self = self else { return }
+                print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ АЛЬБОМЫ")
+                
+                
+                //считываем данные из базы для размещения во вью
+                self.albumsFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", self.activeFriend.id)
+                
+                self.collectionView.reloadData()
+                
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        }
+        
         
     }
     
     
     deinit {
-           albumsToken?.invalidate()
-       }
+        albumsToken?.invalidate()
+    }
     
     // MARK: UICollectionViewDataSource
     

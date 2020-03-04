@@ -29,54 +29,30 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     // распределение друзей в группы по первой букве фамилии
     func FriendSetup()
-               {
-            
-                self.alfGroupsFriends.removeAll()
-               //получение алфавита из первых букв фамилий друзей
-               self.mySortFriends = self.friendsVK.sorted(by: <)
-
-               var set = Set<Character>()
-               self.friendsAlf = self.mySortFriends
-                   .compactMap{ $0.lastName.first }
-                   .filter { set.insert($0).inserted }
-                
-               // print(self.friendsAlf)
-               
-               //сортировка друзей по алфавиту и создания массива из групп из отсортированных друзей для отображения секций таблицы
-               for i in (0..<self.friendsAlf.count) {
-                   let friendGroup = self.mySortFriends.filter({$0.lastName.first == self.friendsAlf[i]})
-                   if friendGroup.count > 0 {
-                       self.alfGroupsFriends.append(friendGroup)
-                   }
-               }
-                
-                
-           //     self.tableView.reloadData()
-
-               // print(self.alfGroupsFriends)
-                
-           }
+    {
+        
+        self.alfGroupsFriends.removeAll()
+        //получение алфавита из первых букв фамилий друзей
+        self.mySortFriends = self.friendsVK.sorted(by: <)
+        
+        var set = Set<Character>()
+        self.friendsAlf = self.mySortFriends
+            .compactMap{ $0.lastName.first }
+            .filter { set.insert($0).inserted }
+        
+        // print(self.friendsAlf)
+        
+        //сортировка друзей по алфавиту и создания массива из групп из отсортированных друзей для отображения секций таблицы
+        for i in (0..<self.friendsAlf.count) {
+            let friendGroup = self.mySortFriends.filter({$0.lastName.first == self.friendsAlf[i]})
+            if friendGroup.count > 0 {
+                self.alfGroupsFriends.append(friendGroup)
+            }
+        }
+        
+        
+    }
     
-    //    func pairTableAndRealm() {
-    //            //  guard let realm = try? Realm() else { return }
-    //            //  friends = realm.objects(FriendVK.self)
-    //              friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
-    //                  guard let tableView = self?.tableView else { return }
-    //                  switch changes {
-    //                  case .initial:
-    //                      tableView.reloadData()
-    //                  case .update(_, let deletion, let insertion, let modification):
-    //                      print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ")
-    ////                       tableView.beginUpdates()
-    ////                    tableView.insertRows(at: insertion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    ////                     tableView.deleteRows(at: deletion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    ////                     tableView.reloadRows(at: modification.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    ////                      tableView.endUpdates()
-    //                  case .error(let error):
-    //                      fatalError("\(error)")
-    //                  }
-    //              }
-    //          }
     
     
     override func viewDidLoad() {
@@ -88,7 +64,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         
         //pairTableAndRealm()
         
-      //  print("Список загруженных из базы друзей: \(friendsVK)")
+        //  print("Список загруженных из базы друзей: \(friendsVK)")
         
         //загрузка списка друзей из VK
         networkService.loadFriends() { [weak self] result in
@@ -100,77 +76,42 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                     return }
                 
                 //сортировка друзей по алфавиту
-               // self.mySortFriends = friendsVK.sorted(by: <)
+                // self.mySortFriends = friendsVK.sorted(by: <)
                 
                 //сохранение друзей в Realm, удаляем старую базу и создаем новую
-                try? RealmService.save(items: friendsVK/*self.mySortFriends*/, configuration: RealmService.deleteIfMigration, update: .all)
+                try? RealmService.save(items: friendsVK, configuration: RealmService.deleteIfMigration, update: .all)
                 
                 //считываем данные из БД
                 self.friendsVK = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendVK.self)
-                
-             //   print(self.friendsVK)
-                
-                //распределение друзей в группы по первой букве фамилии
-
-             //   self.FriendSetup()
-                
-                
-//                DispatchQueue.main.async {
-//                    self.tableView.reloadData()
-//                }
                 
             case let .failure(error):
                 print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ: \(error)")
             }
         }
         
-        // если база не пустая
-    //    if friendsVK.count >  0 {
-            
-            //ставим observer на БД
-            friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
-                guard let tableView = self?.tableView else { return }
-                switch changes {
-                case .initial:
-                    tableView.reloadData()
-                case .update://(_, let deletion, let insertion, let modification):
-                    
-                    guard let self = self else { return }
-                    print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ ДРУЗЬЯ")
-                    
-                    //self!.friendsVK = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendVK.self)
-                    // сохраняем в память новую версию данных из БД
-                   // self.mySortFriends = self.friendsVK.sorted(by: <)
-                   // self.mySortFriends = friends
-                    
-                    self.FriendSetup()
-                    
-//
-//                    if let topVC = UIApplication.getTopViewController() {
-//                                           for view in topVC.view.subviews {
-//                                               print(view.restorationIdentifier as Any)
-//
-//                                               if (view.restorationIdentifier == "friendAlbumsViewID") {
-//
-//                                                let collection = view as? UICollectionView
-//                                                collection?.reloadData()
-//                                                   print("ЖОПА")
-//                                                   //view.removeFromSuperview();
-//                                               }
-//                                           }
-//                    }
-                    
-
-                    
-                    self.tableView.reloadData()
-                                
-                case .error(let error):
-                    fatalError("\(error)")
-                }
-            }
-            
-   //     }
         
+        //ставим observer на БД
+        friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
+            guard let tableView = self?.tableView else { return }
+            switch changes {
+            case .initial:
+                tableView.reloadData()
+            case .update:
+                
+                guard let self = self else { return }
+                print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ ДРУЗЬЯ")
+                
+                self.FriendSetup()
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+                //self.tableView.reloadData()
+                
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        }
         
     }
     
@@ -179,10 +120,10 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         friendsToken?.invalidate()
     }
     
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-    
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
     
     // MARK: - SerchBar
     
@@ -239,12 +180,12 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         if seach {
             cell.configure(witch: searchFriend[indexPath.row])
             if searchFriend[indexPath.row].deactivated != "" {
-               // print("ДРУГ ЗАБЛОКИРОВАН ИЛИ УДАЛЕН: \(searchFriend[indexPath.row].deactivated)")
+                // print("ДРУГ ЗАБЛОКИРОВАН ИЛИ УДАЛЕН: \(searchFriend[indexPath.row].deactivated)")
                 blockCell = true }
         } else {
             cell.configure(witch: alfGroupsFriends[indexPath.section][indexPath.row])
             if alfGroupsFriends[indexPath.section][indexPath.row].deactivated != "" {
-               // print("ДРУГ ЗАБЛОКИРОВАН ИЛИ УДАЛЕН: \(alfGroupsFriends[indexPath.section][indexPath.row].deactivated)")
+                // print("ДРУГ ЗАБЛОКИРОВАН ИЛИ УДАЛЕН: \(alfGroupsFriends[indexPath.section][indexPath.row].deactivated)")
                 blockCell = true }
         }
         

@@ -8,14 +8,15 @@
 
 import UIKit
 
+@available(iOS 13.0, *)
 class NewsActionsCell: UITableViewCell {
     
     @IBAction func likeButton(_ sender: UIButton) {
         
     }
     
-    @IBOutlet weak var likeButton: UIButton!
-
+    @IBOutlet weak var likeUser: UIImageView!
+    
     @IBOutlet weak var likeCount: UILabel!
         
     @IBOutlet weak var commentsCount: UILabel!
@@ -36,6 +37,21 @@ class NewsActionsCell: UITableViewCell {
         commentsCount.text = nil
         repostCount.text = nil
         viewsCount.text = nil
+        likeUser.image =  UIImage(systemName: "suit.heart")
+    }
+    
+    public func configure(witch news: NewsForTable) {
+        self.likeCount.text = String(news.likesCount)
+        self.commentsCount.text = String(news.comments)
+        self.repostCount.text = String(news.reposts)
+        self.viewsCount.text = String(news.views)
+        
+        if news.likeUser == 1 {
+            likeUser.image =  UIImage(systemName: "suit.heart.fill")
+        }
+        
+      //  print(likeUser.image)
+        
     }
     
 }

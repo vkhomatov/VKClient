@@ -49,20 +49,5 @@ class FriendVK: Object, Comparable {
     
 }
 
-//{
-//"response": {
-//    "count": 112,
-//    "items": [
-//        {
-//            "id": 31147,
-//            "first_name": "Вера",
-//            "last_name": "Вишневая",
-//            "is_closed": false,
-//            "can_access_closed": true,
-//            "photo_100": "https://sun1-24.userapi.com/dUKnKNPpY2eZX7PcaJEi8M4Z-IAdJRPIFKuXIg/EEX6ktE2qVs.jpg?ava=1",
-//            "online": 0,
-//            "track_code": "f16a979eVW5DW9pzmCTBCYukApbqVnPEMSoifD_f1uuUOu0pozc4BUptvHLMJJMMjV6ZBB40Ew"
-//        },
-
 
 

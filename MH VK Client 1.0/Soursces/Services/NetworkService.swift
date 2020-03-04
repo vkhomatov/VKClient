@@ -189,38 +189,42 @@
         
     }
     
+    
+    
+    // MARK: - Загрузка новостей
+    
+    
+    func loadNews(completion: ((Result<NewsVK, Error>) -> Void)? = nil) {
+        let path = "/method/newsfeed.get"
+        
+        let params: Parameters = [
+            "access_token":  Session.shared.accessToken,
+            "v": versionAPI,
+            "filters": "post"
+        ]
+        
+        NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
+            switch response.result {
+            case let .success(data):
+                let json = JSON(data)
+                let newsVK = NewsVK(from: json["response"])
+                
+                completion?(.success(newsVK))
+                print("ОБЪЕКТ NEWS ЗАГРУЖЕН")
+                
+                
+            case let .failure(error):
+                completion?(.failure(error))
+                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS")
+                
+            }
+        }
+        
+    }
+
+
  }
  
  
  
- 
- // Получение фото конктретного друга
- //    func getFriendPhotos(userId: Int, completion: ((Result<[FriendPhoto], Error>) -> Void)? = nil) {
- //
- //        let baseUrl = "https://api.vk.com"
- //        let path = "/method/photos.getAll"
- //
- //        let params: Parameters = [
- //            "access_token": Session.shared.accessToken,
- //            "extended": 1,
- //            "v": "5.92",
- //            "no_service_albums": 0,
- //            "owner_id": userId,
- //            "extended": 1
- //        ]
- //
- //
- //        NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
- //            switch response.result {
- //            case let .success(data):
- //                let json = JSON(data)
- //                let friendJSONs = json["response"]["items"].arrayValue
- //                let photos = friendJSONs.map { FriendPhoto(from: $0) }
- //                completion?(.success(photos))
- //            case let .failure(error):
- //                completion?(.failure(error))
- //            }
- //        }
- //
- //    }
- 
+

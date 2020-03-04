@@ -27,7 +27,6 @@ class FriendPhoto: Object {
         self.id = json["id"].intValue
         self.albumId = json["album_id"].intValue
         self.ownerId = json["owner_id"].intValue
-        //self.likesCount = json["likes"].intValue
         self.likesCount = json["likes"]["count"].intValue
         self.likeUser = json["likes"]["user_likes"].intValue
         

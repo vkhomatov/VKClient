@@ -31,29 +31,6 @@ class FriendPhotosController: UIViewController  {
     var photosToken: NotificationToken?
     
     
-    //        func pairTableAndRealm() {
-    //                 //  guard let realm = try? Realm() else { return }
-    //                 //  friends = realm.objects(FriendVK.self)
-    //                   photosToken = self.photosFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
-    //                    guard let viewPhotos = self?.friendPhotosShow else { return }
-    //                       switch changes {
-    //                       case .initial:
-    //                        viewPhotos.setNeedsDisplay()
-    //                       case .update://(_, let deletion, let insertion, let modification):
-    //                           print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ ФОТОГРАФИИ")
-    //                        viewPhotos.setNeedsDisplay()
-    //
-    //     //                       tableView.beginUpdates()
-    //     //                    tableView.insertRows(at: insertion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    //     //                     tableView.deleteRows(at: deletion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    //     //                     tableView.reloadRows(at: modification.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    //     //                      tableView.endUpdates()
-    //                       case .error(let error):
-    //                           fatalError("\(error)")
-    //                       }
-    //                   }
-    //               }
-    
     
     @IBAction func FriendPhotoWinCloseButton(_ sender: Any) {
         self.dismiss(animated: false, completion: nil)
@@ -72,26 +49,6 @@ class FriendPhotosController: UIViewController  {
         
     }
     
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        super.viewWillAppear(animated)
-    //
-    //
-    //
-    //    }
-    
-//    func PhotoSetup(){
-//        //считываем данные из базы для размещения во вью
-//        self.photosFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
-//
-//
-//        //загружаем фото во вью
-//        self.friendPhotosShow.FriendPhotoImageView1.kf.setImage(with: URL(string: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].imageFullURLString))
-//
-//        //устанавливаем кол-во лайков и юзерлайк для фото
-//        self.isLiked(likeCount: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount, likeUser: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likeUser)
-//
-//        print("КОЛ-ВО ЛАЙКОВ: \(self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount)")
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,11 +78,6 @@ class FriendPhotosController: UIViewController  {
                 }
                 
                 
-                
-                
-                
-                
-                
             case let .failure(error):
                 print("ОШИБКА ПОЛУЧЕНИЕ СПИСКА ФОТО В АЛЬБОМЕ ИЗ VK \(error)")
             }
@@ -153,15 +105,7 @@ class FriendPhotosController: UIViewController  {
                 //устанавливаем кол-во лайков и юзерлайк для фото
                 self.isLiked(likeCount: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount, likeUser: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likeUser)
                 
-                
                 print("КОЛ-ВО ЛАЙКОВ: \(self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount)")
-                // self.PhotoSetup()
-                
-                
-                
-                //viewPhotos.setNeedsDisplay()
-                
-                
                 
                 
             case .error(let error):
@@ -177,8 +121,8 @@ class FriendPhotosController: UIViewController  {
     
     
     deinit {
-            photosToken?.invalidate()
-        }
+        photosToken?.invalidate()
+    }
     
     
     //функция перелистывания вью с фото

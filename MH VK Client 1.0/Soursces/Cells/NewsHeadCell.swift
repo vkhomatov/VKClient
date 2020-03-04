@@ -23,10 +23,12 @@ class NewsHeadCell: UITableViewCell {
         headPhoto.image = nil
     }
     
-//    public func configure(witch friend: FriendVK) {
-//        self.friendName.text = friend.fullName
-//        self.friendPic.kf.setImage(with: URL(string: friend.mainPhoto))
-//    }
+    public func configure(witch news: NewsForTable) {
+        self.nameLabel.text = news.fullName
+        self.dateLabel.text = news.date
+        self.headPhoto.kf.setImage(with: URL(string: news.avaPhoto))
+        
+    }
     
       override func awakeFromNib() {
      super.awakeFromNib()
