@@ -13,10 +13,10 @@ class NewsTextCell: UITableViewCell {
     
     @IBOutlet weak var messageLabel: UILabel!
     
+   // var attach: Bool = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
     
     override func prepareForReuse() {
@@ -25,18 +25,34 @@ class NewsTextCell: UITableViewCell {
         
     }
     
+    
+    
+    
     public func configure(witch news: NewsForTable) {
         
         if news.text != "" {
             self.messageLabel.text = news.text
+        } else if news.emptynews == true {
+            self.messageLabel.text = "Отсутствует содержание новости или тип новости нераспознан"
+
         }
-        else if news.otherrow {
+        
+        
+        if news.post_type == "copy" {
+            self.messageLabel.text = "Новость типа репост"
+        }
+        
+        if news.text == "" && news.otherrow {
+        self.messageLabel.text = "Новость содержит только \(news.attachType) аттачмент"
+        }
+        
+        
+        if news.othernews {
             self.messageLabel.text = "Новость содержит только \(news.attachType) контент"
         }
         
-        if news.text == "" && !news.otherrow {
-            self.messageLabel.text = "Новость не содержит контент"
-        }
-    }
         
+        
+    }
+    
 }

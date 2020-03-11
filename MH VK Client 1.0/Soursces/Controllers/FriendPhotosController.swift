@@ -53,8 +53,11 @@ class FriendPhotosController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        DispatchQueue.global().async {
+
         //загрузка фото из выбранного альбома
-        networkService.getFriendPhotosFromAlbum(userId: activeFriend.id, albumId: activeAlbum.id) { [weak self] result in
+            self.networkService.getFriendPhotosFromAlbum(userId: self.activeFriend.id, albumId: self.activeAlbum.id) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -82,6 +85,7 @@ class FriendPhotosController: UIViewController  {
                 print("ОШИБКА ПОЛУЧЕНИЕ СПИСКА ФОТО В АЛЬБОМЕ ИЗ VK \(error)")
             }
         }
+        }
         
         //ставим observer на БД
         self.photosToken = self.photosFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
@@ -98,12 +102,14 @@ class FriendPhotosController: UIViewController  {
                 //считываем данные из базы для размещения во вью
                 self.photosFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
                 
-                
+                DispatchQueue.main.async {
+
                 //загружаем фото во вью
                 self.friendPhotosShow.FriendPhotoImageView1.kf.setImage(with: URL(string: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].imageFullURLString))
                 
                 //устанавливаем кол-во лайков и юзерлайк для фото
                 self.isLiked(likeCount: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount, likeUser: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likeUser)
+                }
                 
                 print("КОЛ-ВО ЛАЙКОВ: \(self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount)")
                 
@@ -112,11 +118,15 @@ class FriendPhotosController: UIViewController  {
                 fatalError("\(error)")
             }
         }
+            
+            
+        DispatchQueue.main.async {
         
+            let panGR = UIPanGestureRecognizer(target: self, action: #selector(self.viewPanned(_:)))
+            self.view.addGestureRecognizer(panGR)
+            }
         
-        let panGR = UIPanGestureRecognizer(target: self, action: #selector(viewPanned(_:)))
-        view.addGestureRecognizer(panGR)
-        
+    
     }
     
     

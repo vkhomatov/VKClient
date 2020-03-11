@@ -42,7 +42,9 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
         tableView.dataSource = self
         tableView.delegate = self
         
-        networkService.loadGroups(userId: Session.shared.usedId) { result in
+        DispatchQueue.global().async {
+
+            self.networkService.loadGroups(userId: Session.shared.usedId) { result in
             switch result {
             case let .success(groups):
                 self.groupsVK = groups
@@ -55,6 +57,7 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
             case let .failure(error):
                 print(error)
             }
+        }
         }
         
     }

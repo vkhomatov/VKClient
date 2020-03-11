@@ -67,7 +67,9 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         //  print("Список загруженных из базы друзей: \(friendsVK)")
         
         //загрузка списка друзей из VK
-        networkService.loadFriends() { [weak self] result in
+        
+        DispatchQueue.global().async {
+            self.networkService.loadFriends() { [weak self] result in
             guard let self = self else { return }
             switch result {
             case let .success(friendsVK):
@@ -88,10 +90,11 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ: \(error)")
             }
         }
+        }
         
         
         //ставим observer на БД
-        friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
+            self.friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
             guard let tableView = self?.tableView else { return }
             switch changes {
             case .initial:
@@ -113,8 +116,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
             }
         }
         
-    }
     
+    }
     
     deinit {
         friendsToken?.invalidate()

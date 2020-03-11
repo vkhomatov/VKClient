@@ -24,7 +24,9 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         tableView.dataSource = self
         tableView.delegate = self
         
-        networkService.searchGroups(userId: Session.shared.usedId, search: "А") { result in
+        DispatchQueue.global().async {
+
+            self.networkService.searchGroups(userId: Session.shared.usedId, search: "А") { result in
             switch result {
             case let .success(groups):
                 self.allGroups = groups
@@ -36,8 +38,15 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
                 print(error)
             }
         }
-        tableView.reloadData()
+        
+        
+        DispatchQueue.main.async {
+
+            self.tableView.reloadData()
+        }
+        }
     }
+        
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()

@@ -193,14 +193,14 @@
     
     // MARK: - Загрузка новостей
     
-    
     func loadNews(completion: ((Result<NewsVK, Error>) -> Void)? = nil) {
         let path = "/method/newsfeed.get"
         
         let params: Parameters = [
             "access_token":  Session.shared.accessToken,
             "v": versionAPI,
-            "filters": "post"
+            "count": 100,
+            //"filters": "post, wall_photo"
         ]
         
         NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
@@ -211,7 +211,6 @@
                 
                 completion?(.success(newsVK))
                 print("ОБЪЕКТ NEWS ЗАГРУЖЕН")
-                
                 
             case let .failure(error):
                 completion?(.failure(error))

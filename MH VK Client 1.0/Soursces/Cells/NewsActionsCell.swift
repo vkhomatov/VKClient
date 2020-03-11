@@ -28,7 +28,6 @@ class NewsActionsCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
     
    override func prepareForReuse() {
@@ -49,9 +48,7 @@ class NewsActionsCell: UITableViewCell {
         if news.likeUser == 1 {
             likeUser.image =  UIImage(systemName: "suit.heart.fill")
         }
-        
-      //  print(likeUser.image)
-        
+                
     }
-    
+
 }

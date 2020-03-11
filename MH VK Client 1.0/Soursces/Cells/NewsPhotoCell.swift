@@ -15,47 +15,36 @@ class NewsPhotoCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         newsPhoto.image = nil
-      //  newsPhoto.isHidden = true
-
+        
     }
     
     
     public func configure(witch news: NewsForTable) {
         
-        
-        if news.photo != nil {
-        //    newsPhoto.isHidden = false
-        self.newsPhoto.kf.setImage(with: URL(string: news.photo!.imageCellURLString))
-
-          //   print("ИМАДЖВЬЮ ОТКРЫТ")
-
-
+        if news.photorow {
+            
+            if news.photo != nil {
+                self.newsPhoto.kf.setImage(with: URL(string: news.photo!.imageCellURLString)) }
         }
-
-
         
-       // let screenSize: CGRect = UIScreen.main.bounds
-       // self. = ((screenSize.width) / CGFloat((news.widhtPhoto/news.heighPhoto)))
-        
-       // self.frame.height =
-        
-//        if news.attachPhoto != nil
-//        {
-//        self.newsPhoto.kf.setImage(with: URL(string: news.attachPhoto!))
-//            newsPhoto.isHidden = false
+        if news.wallphoto {
+            if news.wallphotos[0].imageCellURLString != "" {
+                self.newsPhoto.kf.setImage(with: URL(string: news.wallphotos[0].imageCellURLString)) }
+        }
+    }
+    
+//    public func configure_wallphoto(witch news: NewsForTable) {
+//
+//        if news.wallphotos[0].imageCellURLString != "" {
+//            self.newsPhoto.kf.setImage(with: URL(string: news.wallphotos[0].imageCellURLString))
 //
 //        }
-//        else {
-//            newsPhoto.isHidden = true
-//            print("ИМАДЖВЬЮ СПРЯТАН")
-//        }
-        
-    }
+//    }
+    
     
 }

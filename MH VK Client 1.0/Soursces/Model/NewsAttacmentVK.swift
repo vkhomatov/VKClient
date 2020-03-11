@@ -41,6 +41,17 @@ class Attachment {
 
 
 
+//"likes": {
+//"user_likes": 0,
+//"count": 12
+//},
+//"comments": {
+//"count": 0
+//},
+//"can_comment": 0,
+//"can_repost": 1
+
+
 // MARK: - Photo
 class attachPhoto {
     
@@ -54,6 +65,12 @@ class attachPhoto {
     var imageCellURLString: String = ""
     var imageFullURLString: String = ""
     
+    var likesCount: Int = 0
+    var likeUser: Int = 0
+    var reposts: Int = 0
+    var comments: Int = 0
+    var views: Int = 0
+    
     convenience init(from json: JSON) {
         self.init()
         
@@ -63,6 +80,12 @@ class attachPhoto {
         
         self.height = json["height"].intValue
         self.widht = json["widht"].intValue
+        
+        self.likesCount = json["likes"]["count"].intValue
+        self.likeUser = json["likes"]["user_likes"].intValue
+        self.reposts = json["reposts"]["count"].intValue
+        self.comments = json["comments"]["count"].intValue
+        self.views = json["views"]["count"].intValue
         
         
         

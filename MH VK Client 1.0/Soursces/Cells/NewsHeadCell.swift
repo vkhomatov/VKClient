@@ -15,6 +15,10 @@ class NewsHeadCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var headPhoto: FriendPicImageView!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+    
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -29,12 +33,5 @@ class NewsHeadCell: UITableViewCell {
         self.headPhoto.kf.setImage(with: URL(string: news.avaPhoto))
         
     }
-    
-      override func awakeFromNib() {
-     super.awakeFromNib()
-     // Initialization code
-     }
-     
-     
     
 }

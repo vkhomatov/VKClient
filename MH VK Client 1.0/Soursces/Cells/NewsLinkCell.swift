@@ -9,7 +9,7 @@
 import UIKit
 
 class NewsLinkCell: UITableViewCell {
-
+    
     @IBOutlet weak var linkTitle: UILabel!
     @IBOutlet weak var linkCaption: UILabel!
     @IBOutlet weak var linkPhoto: UIImageView!
@@ -21,28 +21,27 @@ class NewsLinkCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
     }
-
-     override func prepareForReuse() {
-           super.prepareForReuse()
-           linkTitle.text = nil
-           linkCaption.text = nil
-           linkPhoto.image = nil
-           linkDescription.text = nil
-           linkUrl.text = nil
-       }
-
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        linkTitle.text = nil
+        linkCaption.text = nil
+        linkPhoto.image = nil
+        linkDescription.text = nil
+        linkUrl.text = nil
+    }
+    
     public func configure(witch news: NewsForTable) {
         
         if news.link != nil {
-
-        self.linkTitle.text = news.link!.title
-        self.linkCaption.text = news.link!.caption
-        self.linkPhoto.kf.setImage(with: URL(string: news.link!.photo!.imageFullURLString))
-        self.linkDescription.text = news.link!.description
-        self.linkUrl.text = news.link!.url
+            
+            self.linkTitle.text = news.link!.title
+            self.linkCaption.text = news.link!.caption
+            self.linkPhoto.kf.setImage(with: URL(string: news.link!.photo!.imageFullURLString))
+            self.linkDescription.text = news.link!.description
+            self.linkUrl.text = news.link!.url
         }
 
-        
     }
     
     

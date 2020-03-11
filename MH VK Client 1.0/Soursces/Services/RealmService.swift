@@ -30,7 +30,7 @@ class RealmService {
                                 update: Realm.UpdatePolicy = .all)
         throws {
             let realm = try Realm(configuration: configuration)
-            print("Realm save: \(String(describing: configuration.fileURL))" )
+            print("Realm \(String(describing: configuration.fileURL!))" )
             try realm.write {
                 realm.add(items.self, update: update)
             }

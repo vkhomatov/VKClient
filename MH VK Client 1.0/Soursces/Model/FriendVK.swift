@@ -31,7 +31,6 @@ class FriendVK: Object, Comparable {
     
     let albums = List<FriendAlbum>()
     
-    
     convenience init(from json: JSON) {
         self.init()
         

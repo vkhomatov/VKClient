@@ -25,7 +25,9 @@ class FriendAlbumsController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //загрузка списка альбомов выбранного друга из VK
-        networkService.getFriendAlbums(userId: activeFriend.id) { [weak self] result in
+        
+        DispatchQueue.global().async {
+            self.networkService.getFriendAlbums(userId: self.activeFriend.id) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -68,14 +70,17 @@ class FriendAlbumsController: UICollectionViewController {
                 //считываем данные из базы для размещения во вью
                 self.albumsFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", self.activeFriend.id)
                 
+                DispatchQueue.main.async {
+
                 self.collectionView.reloadData()
+                }
                 
             case .error(let error):
                 fatalError("\(error)")
             }
         }
         
-        
+        }
     }
     
     
