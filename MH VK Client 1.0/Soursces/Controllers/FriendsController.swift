@@ -8,6 +8,8 @@
 
 import UIKit
 import RealmSwift
+import PromiseKit
+
 
 
 class FriendsController: UITableViewController, UISearchBarDelegate {
@@ -21,26 +23,26 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     private var friendsAlf = [Character]()
     private var seach: Bool = false
     
+    let deleteIfMigration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     var friendsToken: NotificationToken?
-    // var friends: Results<FriendVK>?
     
     //пытаемся загрузить данные из базы
-    private lazy var friendsVK: Results<FriendVK> = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendVK.self)//.sorted(byKeyPath: "lastName")
+    private lazy var friendsVK: Results<FriendVK> = try! Realm(configuration: deleteIfMigration).objects(FriendVK.self)//.sorted(byKeyPath: "lastName")
     
     // распределение друзей в группы по первой букве фамилии
-    func FriendSetup()
-    {
-        
+    func FriendSetup() {
         self.alfGroupsFriends.removeAll()
+        
+        
         //получение алфавита из первых букв фамилий друзей
         self.mySortFriends = self.friendsVK.sorted(by: <)
         
+      //  DispatchQueue.global().async {
+
         var set = Set<Character>()
         self.friendsAlf = self.mySortFriends
             .compactMap{ $0.lastName.first }
             .filter { set.insert($0).inserted }
-        
-        // print(self.friendsAlf)
         
         //сортировка друзей по алфавиту и создания массива из групп из отсортированных друзей для отображения секций таблицы
         for i in (0..<self.friendsAlf.count) {
@@ -49,52 +51,73 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 self.alfGroupsFriends.append(friendGroup)
             }
         }
-        
-        
+     //}
     }
     
     
-    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         frendsSearch.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
         
-        //pairTableAndRealm()
-        
-        //  print("Список загруженных из базы друзей: \(friendsVK)")
-        
-        //загрузка списка друзей из VK
-        
-        DispatchQueue.global().async {
-            self.networkService.loadFriends() { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case let .success(friendsVK):
-                guard !friendsVK.isEmpty else {
-                    print("НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК ДРУЗЕЙ")
-                    return }
-                
-                //сортировка друзей по алфавиту
-                // self.mySortFriends = friendsVK.sorted(by: <)
-                
-                //сохранение друзей в Realm, удаляем старую базу и создаем новую
-                try? RealmService.save(items: friendsVK, configuration: RealmService.deleteIfMigration, update: .all)
-                
-                //считываем данные из БД
-                self.friendsVK = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendVK.self)
-                
-            case let .failure(error):
-                print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ: \(error)")
-            }
+        //  загружаем друзей из базы если в существующей базе есть друзья
+        if friendsVK.count > 0 {
+            FriendSetup()
+            print("ДРУЗЬЯ ЗАГРУЖЕНЫ ИЗ БАЗЫ")
+            tableView.reloadData()
         }
+        
+        //загрузка друзей из сети с помощью DispatchQueue
+
+        //    DispatchQueue.global().async { // ВОТ ТАК ВСЕ РАБОТАЕТ БЕЗ ОШИБОК
+        //
+        //        self.networkService.loadFriends() { [weak self] result in
+        //            guard let self = self else { return }
+        //            switch result {
+        //            case let .success(friendsVK):
+        //                guard !friendsVK.isEmpty else {
+        //                    print("НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК ДРУЗЕЙ")
+        //                    return }
+        //
+        //                // КАК ТОЛЬКО СТАВЛЮ ЗДЕСЬ ОЧЕРЕДЬ ВОЗНИКАЕТ ОШИБКА ПОТОКА ДЛЯ РЕАЛМ !!!!!!!!!!
+        //                //   DispatchQueue.global().async {
+        //                guard let realm = try? Realm(configuration: self.deleteIfMigration) else { fatalError() }
+        //                print("Realm \(String(describing: self.deleteIfMigration.fileURL!))" )
+        //                try? realm.write {
+        //                    realm.add(friendsVK, update: .all)
+        //                }
+        //
+        //                //считываем данные из БД
+        //                self.friendsVK = try! Realm(configuration: self.deleteIfMigration).objects(FriendVK.self)
+        //                //    }
+        //
+        //            case let .failure(error):
+        //                print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ: \(error)")
+        //            }
+        //        }
+        //        }
+        //
+        
+        
+        //загрузка друзей из сети с помощью Promises
+        networkService.loadFriendsPr()
+        .done  { friends in
+                guard let realm = try? Realm(configuration: self.deleteIfMigration) else { fatalError() }
+                print("Realm \(String(describing: self.deleteIfMigration.fileURL!))" )
+                try? realm.write { realm.add(friends, update: .all) }
+                self.friendsVK = try! Realm(configuration: self.deleteIfMigration).objects(FriendVK.self)
+        }.catch { error in
+            self.show(error as! UIViewController, sender: Any?.self) //у меня только вот так error работает, почему?
+            print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ")
+            
         }
         
         
         //ставим observer на БД
-            self.friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
+        self.friendsToken = self.friendsVK.observe { [weak self] (changes:RealmCollectionChange) in
             guard let tableView = self?.tableView else { return }
             switch changes {
             case .initial:
@@ -109,14 +132,13 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
-                //self.tableView.reloadData()
                 
             case .error(let error):
                 fatalError("\(error)")
             }
         }
         
-    
+        
     }
     
     deinit {
@@ -158,10 +180,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if seach {
-            return ""
-        }  else {
-            //print("NUMBER OF SECTION: \(section)")
-            
+            return "" } else {
             return String(friendsAlf[section])
         }
     }
@@ -169,8 +188,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if seach {
-            return searchFriend.count
-        }else {
+            return searchFriend.count } else {
             return alfGroupsFriends[section].count
         }
     }

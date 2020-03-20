@@ -9,6 +9,8 @@ target 'MH VK Client 1.0' do
   pod 'SwiftyJSON', '~> 5.0.0'
   pod 'Kingfisher', '~> 5.10.1'
   pod 'RealmSwift', '~> 4.3.2'
+  pod 'PromiseKit', '~> 6.13.1'
+  pod 'SnapKit', '~> 5.0.1'
 
   # Pods for MH VK Client 1.0
 

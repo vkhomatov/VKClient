@@ -51,24 +51,27 @@ class LoginViewController: UIViewController {
             return
         }
         
+
         // автозаполняем поля логин и пароль и нажимаем на кнопку войти
-        if loadCount >= 2 {
+            if self.loadCount >= 2 {
             
-            Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
+                self.Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
             
-            guard let savedUsername = loginTextField.text else { return }
-            guard let savedPassword = passwordTextField.text else { return }
+                guard let savedUsername = self.loginTextField.text else { return }
+                guard let savedPassword = self.passwordTextField.text else { return }
             
             let fillForm1 = String(format:"document.getElementsByName('email')[0].value='\(savedUsername)';")
             let fillForm2 = String(format:"document.getElementsByName('pass')[0].value='\(savedPassword)';")
             let pushButton = String(format:"document.getElementsByClassName('button')[0].click();")
             
-            
+            DispatchQueue.main.async {
+
+                
             self.webView.evaluateJavaScript(fillForm1, completionHandler: { (result, error) in
                 if error != nil {
                     print("ФОРМА ВВОДА ЛОГИНА НЕ НАЙДЕНА: \(String(describing: error))")
                 } else if result != nil {
-                    print("ФОРМА ВВОДА ЛОГИНА НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result))")}
+                    print("ФОРМА ВВОДА ЛОГИНА НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result!))")}
             })
             
             
@@ -76,18 +79,20 @@ class LoginViewController: UIViewController {
                 if error != nil {
                     print("ФОРМА ВВОДА ПАРОЛЯ НЕ НАЙДЕНА: \(String(describing: error))")
                 } else if result != nil {
-                    print("ФОРМА ВВОДА ПАРОЛЯ НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result))")}
+                    print("ФОРМА ВВОДА ПАРОЛЯ НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result!))")}
             })
             
             self.webView.evaluateJavaScript(pushButton, completionHandler: { (result, error) in
                 if error != nil {
                     print("КНОПКА ВХОДА НЕ НАЙДЕНА: \(String(describing: error))")
-                } else if result != nil {
-                    print(result as Any)
-                    print("КНОПКА ВХОДА НАЙДЕНА И НАЖАТА: \(String(describing: result))")}
+                } else /*if result != nil */ {
+                  //  print(result as Any)
+                    print("КНОПКА ВХОДА НАЙДЕНА И НАЖАТА")}// \(String(describing: result))")}
+
             })
             
-            pushLogin = true
+            self.pushLogin = true
+                }
             
         } else {
             print("СТРАНИЦА ЕЩЕ НЕ ЗАГРУЖЕНА ИЛИ НЕТ СВЯЗИ С ИНТЕРНЕТ")
@@ -152,13 +157,18 @@ class LoginViewController: UIViewController {
         
         let request = URLRequest(url: components.url!)
         
+        DispatchQueue.main.async {
+
         // удаляем куки, необходимые для автоматического входа
-        webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] cookie in
+            self.webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] cookie in
             cookie.forEach { self?.webView.configuration.websiteDataStore.httpCookieStore.delete($0) }
             print("КУКИ УДАЛЕНЫ")
         }
+        }
         
-        webView.load(request)
+        DispatchQueue.main.async {
+            self.webView.load(request)
+        }
         
     }
     

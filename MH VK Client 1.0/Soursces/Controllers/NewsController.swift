@@ -16,7 +16,12 @@ import Kingfisher
 class NewsController: UITableViewController {
     
     private let networkService = NetworkService(token: Session.shared.accessToken)
-    var newsVK = NewsVK()
+    // var newsVK = NewsVK()
+    
+    var itemsVK = [NewsItemVK]()
+    var profilesVK = [NewsProfileVK]()
+    var groupsVK = [GroupVK]()
+    
     var newsForTable = [NewsForTable]()
     //var newForTable = NewsForTable()
     
@@ -26,38 +31,63 @@ class NewsController: UITableViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        DispatchQueue.global().async {
-            
-            self.networkService.loadNews() { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case let .success(newsVK):
-                    
-                    self.newsVK = newsVK
-                    
-                    print("Загружено новостей: \(self.newsVK.items.count)")
-                    print("Загружено профилей: \(self.newsVK.profiles.count)")
-                    print("Загружено групп: \(self.newsVK.groups.count)\n")
-                    
-                    // функция формирования новостного массива
-                    self.newsAdapter()
-                    
-//                    for _ in 1...10 {
-//                        print("1")
-//                    }
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-//                        for _ in 1...10 {
-//                            print("2")
-//                        }
-                    }
-                    
-                case let .failure(error):
-                    print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
+        networkService.loadNews() { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(itemsVK, profilesVK, groupsVK):
+                
+                self.itemsVK = itemsVK
+                self.profilesVK = profilesVK
+                self.groupsVK = groupsVK
+                
+                if ( self.itemsVK.count > 0 ) {
+                    print("Загружено новостей: \(self.itemsVK.count)")
+                    print("Загружено профилей: \(self.profilesVK.count)")
+                    print("Загружено групп: \(self.groupsVK.count)\n")
+                  //  DispatchQueue.global().async {
+                    self.newsAdapter()  // функция формирования новостного массива
+                  //  }
+                } else {
+                    print("МАССИВ ITEMS ПУСТ\n")
+                    return
                 }
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+                
+            case let .failure(error):
+                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
             }
         }
+        
+        
+        
+        //  DispatchQueue.global().async {
+        
+        //            self.networkService.loadNews() { [weak self] result in
+        //                guard let self = self else { return }
+        //                switch result {
+        //                case let .success(newsVK):
+        //
+        //                    self.newsVK = newsVK
+        //
+        //                    print("Загружено новостей: \(self.newsVK.items.count)")
+        //                    print("Загружено профилей: \(self.newsVK.profiles.count)")
+        //                    print("Загружено групп: \(self.newsVK.groups.count)\n")
+        //
+        //                    // функция формирования новостного массива
+        //                    self.newsAdapter()
+        //
+        //                    DispatchQueue.main.async {
+        //                        self.tableView.reloadData()
+        //                    }
+        //
+        //                case let .failure(error):
+        //                    print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
+        //                }
+        //            }
+        //  }
         
         
         
@@ -72,95 +102,95 @@ class NewsController: UITableViewController {
         return dateFormatter.string(from: timeStamp)
     }
     
-    // функция формирования новостного массива
+    
     func newsAdapter() {
         
-        for new in 0...(newsVK.items.count - 1) {
+        for new in 0...(itemsVK.count - 1) {
             
             let newForTable = NewsForTable()
             // конвертируем время публикации новости
-            newForTable.date = convertTime(time: newsVK.items[new].date)
+            newForTable.date = convertTime(time: itemsVK[new].date)
             
             // проверяем соответсвует ли автор новости другу или группе
-            if newsVK.items[new].source_id >= 0 {
-                for i in (0...newsVK.profiles.count - 1) {
-                    if (newsVK.items[new].source_id == newsVK.profiles[i].id) {
-                        newForTable.fullName = newsVK.profiles[i].fullName
-                        newForTable.avaPhoto = newsVK.profiles[i].mainPhoto
+            if itemsVK[new].source_id >= 0 {
+                for i in (0...profilesVK.count - 1) {
+                    if (itemsVK[new].source_id == profilesVK[i].id) {
+                        newForTable.fullName = profilesVK[i].fullName
+                        newForTable.avaPhoto = profilesVK[i].mainPhoto
                     }
                 }
             } else  {   // автор новости соответсвует группе
                 
-                for i in (0...newsVK.groups.count - 1) {
-                    if (newsVK.items[new].source_id == (newsVK.groups[i].id * -1))  {
-                        newForTable.fullName = newsVK.groups[i].name
-                        newForTable.avaPhoto = newsVK.groups[i].imageName
+                for i in (0...groupsVK.count - 1) {
+                    if (itemsVK[new].source_id == (groupsVK[i].id * -1))  {
+                        newForTable.fullName = groupsVK[i].name
+                        newForTable.avaPhoto = groupsVK[i].imageName
                     }
                 }
             }
             
-            newForTable.post_type = newsVK.items[new].post_type
-            newForTable.copy_owner_id = newsVK.items[new].copy_owner_id
-            newForTable.copy_post_id = newsVK.items[new].copy_post_id
+            newForTable.post_type = itemsVK[new].post_type
+            newForTable.copy_owner_id = itemsVK[new].copy_owner_id
+            newForTable.copy_post_id = itemsVK[new].copy_post_id
             
             print("\nАвтор новости: \(newForTable.fullName)")
-            print("Тип новости: \(newsVK.items[new].type)")
+            print("Тип новости: \(itemsVK[new].type)")
             print("Время публикации: \(newForTable.date)")
             print("Тип записи: \(newForTable.post_type)")
             
             //если тип новости wall_photo
-            if newsVK.items[new].type == "wall_photo" && newsVK.items[new].photos.count > 0 {
+            if itemsVK[new].type == "wall_photo" && itemsVK[new].photos.count > 0 {
                 
-                newForTable.wallphotos = newsVK.items[new].photos
+                newForTable.wallphotos = itemsVK[new].photos
                 newForTable.wallphoto = true
                 newForTable.rowsCount += 1
                 
                 // вытаскиеваем отметки лайкс и т.д. из первого объекта фото
-                newForTable.likeUser = newsVK.items[new].photos[0].likeUser
-                newForTable.likesCount = newsVK.items[new].photos[0].likesCount
-                newForTable.reposts = newsVK.items[new].photos[0].reposts
-                newForTable.views = newsVK.items[new].photos[0].views
-                print("Фото со стены обнаружено: \(newsVK.items[new].photos[0].imageCellURLString)")
+                newForTable.likeUser = itemsVK[new].photos[0].likeUser
+                newForTable.likesCount = itemsVK[new].photos[0].likesCount
+                newForTable.reposts = itemsVK[new].photos[0].reposts
+                newForTable.views = itemsVK[new].photos[0].views
+                print("Фото со стены обнаружено: \(itemsVK[new].photos[0].imageCellURLString)")
                 
             }
             
             //если тип новости post
-            if newsVK.items[new].type == "post" {
+            if itemsVK[new].type == "post" {
                 
                 newForTable.post = true
                 
                 //если тип новости repost
-                if  newsVK.items[new].post_type == "copy" {
+                if  itemsVK[new].post_type == "copy" {
                     newForTable.rowsCount += 1
                     newForTable.perepost = true
-                    print("Обнаружена новость типа репост: \(newsVK.items[new].post_type)")
+                    print("Обнаружена новость типа репост: \(itemsVK[new].post_type)")
                     print("Автор репоста: \(newForTable.copy_owner_id)")
                     print("ID репоста: \(newForTable.copy_post_id)")
                 } else { // если тип новости post
                     
                     // проверяем содержит ли новость текстовый блок
-                    if newsVK.items[new].text != "" {
-                        newForTable.text = newsVK.items[new].text
+                    if itemsVK[new].text != "" {
+                        newForTable.text = itemsVK[new].text
                         newForTable.rowsCount += 1
                         newForTable.textrow = true
-                        print("Текст новости: \(newsVK.items[new].text)")
+                        print("Текст новости: \(itemsVK[new].text)")
                         
-                    } else if newsVK.items[new].attachments!.count == 0 {
+                    } else if itemsVK[new].attachments!.count == 0 {
                         newForTable.rowsCount += 1
                         newForTable.emptynews = true
-                        print("Обнаружена пустая новость: \(newsVK.items[new].post_type)")
+                        print("Обнаружена пустая новость: \(itemsVK[new].post_type)")
                     }
                     
                     
                     // вычисляем аттачмент какого типа содержит новость и вытаскиваем объект аттачмента
-                    if  (newsVK.items[new].attachments != nil && newsVK.items[new].attachments!.count > 0)  {
+                    if  (itemsVK[new].attachments != nil && itemsVK[new].attachments!.count > 0)  {
                         
-                        print("Кол-во аттачментов: \(String(describing: newsVK.items[new].attachments!.count))")
+                        print("Кол-во аттачментов: \(String(describing: itemsVK[new].attachments!.count))")
                         
-                        newsVK.items[new].attachments!.forEach { print("Тип аттачмента: \($0.typeStr)") }
+                        itemsVK[new].attachments!.forEach { print("Тип аттачмента: \($0.typeStr)") }
                         
                         //проверяем есть ли среди аттачментов тип photo и вытаскиваем первый аттачмент photo если он есть
-                        let photoObj = newsVK.items[new].attachments!.first(where: { $0.typeStr == "photo" })
+                        let photoObj = itemsVK[new].attachments!.first(where: { $0.typeStr == "photo" })
                         
                         if photoObj != nil {
                             
@@ -173,7 +203,7 @@ class NewsController: UITableViewController {
                         }
                         
                         //проверяем есть ли среди аттачментов тип link и вытаскиваем первый аттачмент link если он есть
-                        let linkObj = newsVK.items[new].attachments!.first(where: { $0.typeStr == "link" })
+                        let linkObj = itemsVK[new].attachments!.first(where: { $0.typeStr == "link" })
                         
                         if linkObj != nil {
                             newForTable.attachType = linkObj!.typeStr
@@ -187,7 +217,7 @@ class NewsController: UITableViewController {
                         
                         //ставим залушку если тип аттачмента не соответсвует photo или link
                         if linkObj == nil && photoObj == nil {
-                            newForTable.attachType = newsVK.items[new].attachments!.first!.typeStr
+                            newForTable.attachType = itemsVK[new].attachments!.first!.typeStr
                             newForTable.rowsCount += 1
                             newForTable.otherrow = true
                             
@@ -197,18 +227,18 @@ class NewsController: UITableViewController {
                     }
                     
                     // вытаскиеваем отметки лайкс и т.д. из новости
-                    newForTable.likeUser = newsVK.items[new].likeUser
-                    newForTable.likesCount = newsVK.items[new].likesCount
-                    newForTable.reposts = newsVK.items[new].reposts
-                    newForTable.views = newsVK.items[new].views
+                    newForTable.likeUser = itemsVK[new].likeUser
+                    newForTable.likesCount = itemsVK[new].likesCount
+                    newForTable.reposts = itemsVK[new].reposts
+                    newForTable.views = itemsVK[new].views
                 }
             }
             
-            if (newsVK.items[new].type != "wall_photo") && (newsVK.items[new].type != "post")   {
+            if (itemsVK[new].type != "wall_photo") && (itemsVK[new].type != "post")   {
                 newForTable.rowsCount += 1
                 newForTable.othernews = true
-                newForTable.attachType = newsVK.items[new].type
-                print("Обнаружена новость типа: \(newsVK.items[new].type)")
+                newForTable.attachType = itemsVK[new].type
+                print("Обнаружена новость типа: \(itemsVK[new].type)")
                 
             }
             
@@ -220,6 +250,157 @@ class NewsController: UITableViewController {
         }
         
     }
+    
+    
+    
+    // функция формирования новостного массива
+    /*   func newsAdapter() {
+     
+     for new in 0...(newsVK.items.count - 1) {
+     
+     let newForTable = NewsForTable()
+     // конвертируем время публикации новости
+     newForTable.date = convertTime(time: newsVK.items[new].date)
+     
+     // проверяем соответсвует ли автор новости другу или группе
+     if newsVK.items[new].source_id >= 0 {
+     for i in (0...newsVK.profiles.count - 1) {
+     if (newsVK.items[new].source_id == newsVK.profiles[i].id) {
+     newForTable.fullName = newsVK.profiles[i].fullName
+     newForTable.avaPhoto = newsVK.profiles[i].mainPhoto
+     }
+     }
+     } else  {   // автор новости соответсвует группе
+     
+     for i in (0...newsVK.groups.count - 1) {
+     if (newsVK.items[new].source_id == (newsVK.groups[i].id * -1))  {
+     newForTable.fullName = newsVK.groups[i].name
+     newForTable.avaPhoto = newsVK.groups[i].imageName
+     }
+     }
+     }
+     
+     newForTable.post_type = newsVK.items[new].post_type
+     newForTable.copy_owner_id = newsVK.items[new].copy_owner_id
+     newForTable.copy_post_id = newsVK.items[new].copy_post_id
+     
+     print("\nАвтор новости: \(newForTable.fullName)")
+     print("Тип новости: \(newsVK.items[new].type)")
+     print("Время публикации: \(newForTable.date)")
+     print("Тип записи: \(newForTable.post_type)")
+     
+     //если тип новости wall_photo
+     if newsVK.items[new].type == "wall_photo" && newsVK.items[new].photos.count > 0 {
+     
+     newForTable.wallphotos = newsVK.items[new].photos
+     newForTable.wallphoto = true
+     newForTable.rowsCount += 1
+     
+     // вытаскиеваем отметки лайкс и т.д. из первого объекта фото
+     newForTable.likeUser = newsVK.items[new].photos[0].likeUser
+     newForTable.likesCount = newsVK.items[new].photos[0].likesCount
+     newForTable.reposts = newsVK.items[new].photos[0].reposts
+     newForTable.views = newsVK.items[new].photos[0].views
+     print("Фото со стены обнаружено: \(newsVK.items[new].photos[0].imageCellURLString)")
+     
+     }
+     
+     //если тип новости post
+     if newsVK.items[new].type == "post" {
+     
+     newForTable.post = true
+     
+     //если тип новости repost
+     if  newsVK.items[new].post_type == "copy" {
+     newForTable.rowsCount += 1
+     newForTable.perepost = true
+     print("Обнаружена новость типа репост: \(newsVK.items[new].post_type)")
+     print("Автор репоста: \(newForTable.copy_owner_id)")
+     print("ID репоста: \(newForTable.copy_post_id)")
+     } else { // если тип новости post
+     
+     // проверяем содержит ли новость текстовый блок
+     if newsVK.items[new].text != "" {
+     newForTable.text = newsVK.items[new].text
+     newForTable.rowsCount += 1
+     newForTable.textrow = true
+     print("Текст новости: \(newsVK.items[new].text)")
+     
+     } else if newsVK.items[new].attachments!.count == 0 {
+     newForTable.rowsCount += 1
+     newForTable.emptynews = true
+     print("Обнаружена пустая новость: \(newsVK.items[new].post_type)")
+     }
+     
+     
+     // вычисляем аттачмент какого типа содержит новость и вытаскиваем объект аттачмента
+     if  (newsVK.items[new].attachments != nil && newsVK.items[new].attachments!.count > 0)  {
+     
+     print("Кол-во аттачментов: \(String(describing: newsVK.items[new].attachments!.count))")
+     
+     newsVK.items[new].attachments!.forEach { print("Тип аттачмента: \($0.typeStr)") }
+     
+     //проверяем есть ли среди аттачментов тип photo и вытаскиваем первый аттачмент photo если он есть
+     let photoObj = newsVK.items[new].attachments!.first(where: { $0.typeStr == "photo" })
+     
+     if photoObj != nil {
+     
+     print("Аттачмент photo обнаружен : \(String(describing: photoObj!.photoObj!.imageCellURLString))")
+     
+     newForTable.attachType = photoObj!.typeStr
+     newForTable.photo = photoObj!.photoObj
+     newForTable.rowsCount += 1
+     newForTable.photorow = true
+     }
+     
+     //проверяем есть ли среди аттачментов тип link и вытаскиваем первый аттачмент link если он есть
+     let linkObj = newsVK.items[new].attachments!.first(where: { $0.typeStr == "link" })
+     
+     if linkObj != nil {
+     newForTable.attachType = linkObj!.typeStr
+     newForTable.link = linkObj!.linkObj
+     newForTable.rowsCount += 1
+     newForTable.linkrow = true
+     
+     print("Аттачмент link обнаружен : \(String(describing: linkObj!.linkObj!.url ))")
+     print("Аттачмент link фото : \(String(describing: linkObj!.linkObj!.photo!.imageCellURLString  ))")
+     }
+     
+     //ставим залушку если тип аттачмента не соответсвует photo или link
+     if linkObj == nil && photoObj == nil {
+     newForTable.attachType = newsVK.items[new].attachments!.first!.typeStr
+     newForTable.rowsCount += 1
+     newForTable.otherrow = true
+     
+     print("Обнаружен аттачмент типа: \(newForTable.attachType)")
+     }
+     
+     }
+     
+     // вытаскиеваем отметки лайкс и т.д. из новости
+     newForTable.likeUser = newsVK.items[new].likeUser
+     newForTable.likesCount = newsVK.items[new].likesCount
+     newForTable.reposts = newsVK.items[new].reposts
+     newForTable.views = newsVK.items[new].views
+     }
+     }
+     
+     if (newsVK.items[new].type != "wall_photo") && (newsVK.items[new].type != "post")   {
+     newForTable.rowsCount += 1
+     newForTable.othernews = true
+     newForTable.attachType = newsVK.items[new].type
+     print("Обнаружена новость типа: \(newsVK.items[new].type)")
+     
+     }
+     
+     print("Кол-во ячеек: \(newForTable.rowsCount)")
+     
+     //записываем объект новость в массив
+     newsForTable.append(newForTable)
+     
+     }
+     
+     } */
     
     
     // MARK: - Table view data source

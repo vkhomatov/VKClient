@@ -9,6 +9,8 @@
  import Foundation
  import Alamofire
  import SwiftyJSON
+ import PromiseKit
+ 
  
  
  class NetworkService {
@@ -29,8 +31,43 @@
         self.token = token
     }
     
+    
     // Получение списка друзей
-    func loadFriends(completion: ((Result<[FriendVK], Error>) -> Void)? = nil) {
+    //    func loadFriends(completion: ((Result<[FriendVK], Error>) -> Void)? = nil) {
+    //
+    //        let path = "/method/friends.get"
+    //
+    //        let params: Parameters = [
+    //            "access_token":  token,
+    //            "v": versionAPI,
+    //            "fields": "photo_100"
+    //        ]
+    //
+    //        //получение друзей пользователя
+    //            NetworkService.session.request(self.baseUrl + path, method: .get, parameters: params).responseJSON { response in
+    //            switch response.result {
+    //
+    //            case let .success(data):
+    //                let json = JSON(data)
+    //                let friendJSONs = json["response"]["items"].arrayValue
+    //                let friends = friendJSONs.map { FriendVK(from: $0) }
+    //                completion?(.success(friends))
+    //                print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
+    //
+    //            case let .failure(error):
+    //                completion?(.failure(error))
+    //                print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ \(error)")
+    //
+    //            }
+    //        }
+    //
+    //    }
+    
+    
+    
+    //получение списка друзей Promise
+    
+    func loadFriendsPr() -> Promise<[FriendVK]> {
         
         let path = "/method/friends.get"
         
@@ -41,28 +78,31 @@
         ]
         
         //получение друзей пользователя
-        NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
-            switch response.result {
-                
-            case let .success(data):
-                let json = JSON(data)
-                let friendJSONs = json["response"]["items"].arrayValue
-                let friends = friendJSONs.map { FriendVK(from: $0) }
-                completion?(.success(friends))
-                print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
-                
-            case let .failure(error):
-                completion?(.failure(error))
-                print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ \(error)")
-                
+        return Promise { resolver in
+            NetworkService.session.request(self.baseUrl + path, method: .get, parameters: params).responseJSON { response in
+                switch response.result {
+                    
+                case let .success(data):
+                    let json = JSON(data)
+                    let friendJSONs = json["response"]["items"].arrayValue
+                    let friends = friendJSONs.map { FriendVK(from: $0) }
+                    resolver.fulfill(friends)
+                    print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
+                    
+                case let .failure(error):
+                    resolver.reject(error)
+                    print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ \(error)")
+                    
+                }
             }
+            
         }
-        
     }
     
     
+    
     //получение альбомов пользователя
-    func getFriendAlbums(userId: Int, completion: ((Result<[FriendAlbum], Error>) -> Void)? = nil) {
+    func getFriendAlbums(userId: Int, completion: ((Swift.Result<[FriendAlbum], Error>) -> Void)? = nil) {
         
         let path = "/method/photos.getAlbums"
         
@@ -94,7 +134,7 @@
     
     
     // Получение фото в альбоме
-    func getFriendPhotosFromAlbum(userId: Int, albumId: Int, completion: ((Result<[FriendPhoto], Error>) -> Void)? = nil) {
+    func getFriendPhotosFromAlbum(userId: Int, albumId: Int, completion: ((Swift.Result<[FriendPhoto], Error>) -> Void)? = nil) {
         
         let path = "/method/photos.get"
         
@@ -128,7 +168,7 @@
     
     
     // Получение групп активного пользователя
-    func loadGroups(userId: Int, completion: ((Result<[GroupVK], Error>) -> Void)? = nil) {
+    func loadGroups(userId: Int, completion: ((Swift.Result<[GroupVK], Error>) -> Void)? = nil) {
         let path = "/method/groups.get"
         
         let params: Parameters = [
@@ -157,7 +197,7 @@
     }
     
     // Получение групп по поисковому запросу
-    func searchGroups(userId: Int, search: String, completion: ((Result<[GroupVK], Error>) -> Void)? = nil) {
+    func searchGroups(userId: Int, search: String, completion: ((Swift.Result<[GroupVK], Error>) -> Void)? = nil) {
         
         let path = "/method/groups.search"
         
@@ -191,9 +231,41 @@
     
     
     
-    // MARK: - Загрузка новостей
+    // MARK: - Загрузка новостей в один объект
     
-    func loadNews(completion: ((Result<NewsVK, Error>) -> Void)? = nil) {
+    //    func loadNews(completion: ((Result<NewsVK, Error>) -> Void)? = nil) {
+    //        let path = "/method/newsfeed.get"
+    //
+    //        let params: Parameters = [
+    //            "access_token":  Session.shared.accessToken,
+    //            "v": versionAPI,
+    //            "count": 100,
+    //            //"filters": "post, wall_photo"
+    //        ]
+    //
+    //        NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
+    //            switch response.result {
+    //            case let .success(data):
+    //                let json = JSON(data)
+    //                let newsVK = NewsVK(from: json["response"])
+    //
+    //                completion?(.success(newsVK))
+    //                print("ОБЪЕКТ NEWS ЗАГРУЖЕН")
+    //
+    //            case let .failure(error):
+    //                completion?(.failure(error))
+    //                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS")
+    //
+    //            }
+    //        }
+    //
+    //    }
+    //
+    
+    
+    // MARK: - Загрузка новостей в три потока
+    
+    func loadNews(completion: ((Swift.Result<([NewsItemVK], [NewsProfileVK], [GroupVK]), Error>) -> Void)? = nil) {
         let path = "/method/newsfeed.get"
         
         let params: Parameters = [
@@ -207,23 +279,49 @@
             switch response.result {
             case let .success(data):
                 let json = JSON(data)
-                let newsVK = NewsVK(from: json["response"])
                 
-                completion?(.success(newsVK))
-                print("ОБЪЕКТ NEWS ЗАГРУЖЕН")
+                let dispatchGroup = DispatchGroup()
+                var items = [NewsItemVK]()
+                var profiles = [NewsProfileVK]()
+                var groups = [GroupVK]()
+                
+                DispatchQueue.global().async(group: dispatchGroup) {
+                    let itemsJSONs = json["response"]["items"].arrayValue
+                    items = itemsJSONs.map  { NewsItemVK(from: $0) }
+                    // print(items)
+                }
+                
+                DispatchQueue.global().async(group: dispatchGroup) {
+                    let profilesJSONs = json["response"]["profiles"].arrayValue
+                    profiles = profilesJSONs.map  { NewsProfileVK(from: $0) }
+                    // print(profiles)
+                }
+                
+                DispatchQueue.global().async(group: dispatchGroup) {
+                    let groupsJSONs = json["response"]["groups"].arrayValue
+                    groups = groupsJSONs.map  { GroupVK(from: $0) }
+                    // print(groups)
+                }
+                
+                //Работает если только сделать во так - то есть использовать notify
+                dispatchGroup.notify(queue: DispatchQueue.main) {
+                    completion?(.success((items, profiles, groups)))
+                    print("ОБЪЕКТЫ ITEMS, PROFILES и GROUPS ЗАГРУЖЕНЫ")
+                    
+                }
+                
                 
             case let .failure(error):
                 completion?(.failure(error))
-                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS")
+                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТОВ ITEMS, PROFILES и GROUPS")
                 
             }
         }
         
     }
-
-
+    
+    
  }
  
  
  
-

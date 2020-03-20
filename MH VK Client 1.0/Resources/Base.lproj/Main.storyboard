@@ -808,7 +808,6 @@
                                         <constraint firstItem="XRY-cj-9tC" firstAttribute="centerY" secondItem="0Tj-Gi-urr" secondAttribute="centerY" id="Nl0-nN-fk1"/>
                                         <constraint firstItem="0Tj-Gi-urr" firstAttribute="leading" secondItem="ncs-2e-PY0" secondAttribute="trailing" constant="2" id="Np9-7L-BqK"/>
                                         <constraint firstItem="TaQ-Gp-gLa" firstAttribute="centerY" secondItem="Gwb-c8-paY" secondAttribute="centerY" id="OXW-0C-opn"/>
-                                        <constraint firstItem="0Tj-Gi-urr" firstAttribute="centerY" secondItem="Gwb-c8-paY" secondAttribute="centerY" id="PK8-Dm-Vcb"/>
                                         <constraint firstAttribute="bottomMargin" relation="lessThanOrEqual" secondItem="oA7-aS-Hrb" secondAttribute="bottom" constant="22" id="Q9W-XN-uWe"/>
                                         <constraint firstItem="bXB-KU-cBw" firstAttribute="centerY" secondItem="0Tj-Gi-urr" secondAttribute="centerY" id="RgM-21-B2b"/>
                                         <constraint firstItem="TaQ-Gp-gLa" firstAttribute="top" relation="lessThanOrEqual" secondItem="Gwb-c8-paY" secondAttribute="topMargin" constant="22" id="SYt-6X-fi5"/>

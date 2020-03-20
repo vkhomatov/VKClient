@@ -17,17 +17,25 @@ class FriendAlbumsController: UICollectionViewController {
     
     var albumsToken: NotificationToken?
     
+    let deleteIfMigration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     
     //чтение списка альбомов выбранного друга из базы
-    private lazy var albumsFromRealm: Results<FriendAlbum> = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", activeFriend.id)
+    private lazy var albumsFromRealm: Results<FriendAlbum> = try! Realm(configuration: deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", activeFriend.id)
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //загрузка списка альбомов выбранного друга из VK
         
-        DispatchQueue.global().async {
-            self.networkService.getFriendAlbums(userId: self.activeFriend.id) { [weak self] result in
+        
+        //  загружаем альбомы из базы, если в существующей базе есть друзья
+             if albumsFromRealm.count > 0 {
+                 print("АЛЬБОМЫ ЗАГРУЖЕНЫ ИЗ БАЗЫ")
+                 collectionView.reloadData()
+             }
+        
+        
+        //загрузка списка альбомов выбранного друга из VK
+        self.networkService.getFriendAlbums(userId: self.activeFriend.id) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -37,8 +45,11 @@ class FriendAlbumsController: UICollectionViewController {
                     print("НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК АЛЬБОМОВ ДРУГА: \(self.activeFriend.fullName)")
                     return }
                 
+                //  DispatchQueue.main.async {
+                
                 //удаляем старые записи об альбомах друга из базы и записываем полученные из VK
-                guard let realm = try? Realm(configuration: RealmService.deleteIfMigration) else { fatalError() }
+                guard let realm = try? Realm(configuration: Realm.Configuration(deleteRealmIfMigrationNeeded: true)) else { fatalError() }
+                
                 guard let friendVK = realm.object(ofType: FriendVK.self, forPrimaryKey: self.activeFriend.id) else {
                     print("НЕ МОГУ ПОЛУЧИТЬ ОБЪЕКТ ДРУГ: \(self.activeFriend.fullName) ИЗ БД")
                     return }
@@ -48,38 +59,36 @@ class FriendAlbumsController: UICollectionViewController {
                     friendVK.albums.append(objectsIn: friendAlbumsVK)
                     
                 }
+                //    }
                 
                 
             case let .failure(error):
                 print("ОШИБКА ПОЛУЧЕНИЕ СПИСКА АЛЬБОМОВ ИЗ VK \(error)")
             }
-        }
-        
-        //ставим observer на БД
-        self.albumsToken = self.albumsFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
-            guard let collectionView = self?.collectionView else { return }
-            switch changes {
-            case .initial:
-                collectionView.reloadData()
-            case .update://(_, let deletion, let insertion, let modification):
-                
-                guard let self = self else { return }
-                print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ АЛЬБОМЫ")
-                
-                
-                //считываем данные из базы для размещения во вью
-                self.albumsFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", self.activeFriend.id)
-                
-                DispatchQueue.main.async {
-
-                self.collectionView.reloadData()
+            
+            //ставим observer на БД
+            self.albumsToken = self.albumsFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
+                guard let collectionView = self?.collectionView else { return }
+                switch changes {
+                case .initial:
+                    collectionView.reloadData()
+                case .update://(_, let deletion, let insertion, let modification):
+                    
+                    guard let self = self else { return }
+                    print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ АЛЬБОМЫ")
+                    
+                    //считываем данные из базы для размещения во вью
+                    self.albumsFromRealm = try! Realm(configuration: self.deleteIfMigration).objects(FriendAlbum.self).filter("ownerId == %@", self.activeFriend.id)
+                    
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                    }
+                    
+                case .error(let error):
+                    fatalError("\(error)")
                 }
-                
-            case .error(let error):
-                fatalError("\(error)")
             }
-        }
-        
+            
         }
     }
     

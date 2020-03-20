@@ -157,15 +157,15 @@
 			children = (
 				58AAD5A6232A39CB00FB34AF /* AppDelegate.swift */,
 				583B5980232F05D100375F4A /* Controllers */,
-				58483E8E23335605007B773E /* Model */,
+				58483E8E23335605007B773E /* Models */,
 				5882146623991E2500EA1CEA /* Cells */,
-				583B5983232F062300375F4A /* View */,
+				583B5983232F062300375F4A /* Views */,
 				580C787423A4E73500EE0A2F /* Services */,
 			);
 			path = Soursces;
 			sourceTree = "<group>";
 		};
-		583B5983232F062300375F4A /* View */ = {
+		583B5983232F062300375F4A /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				585902BF233C12DC000FBE2A /* HeartView​.swift */,
@@ -173,10 +173,10 @@
 				58371AA223456AF10079C7AD /* CommunitesPicImageView.swift */,
 				58867906234A5F4B004F2313 /* AlbumPhotosView.swift */,
 			);
-			path = View;
+			path = Views;
 			sourceTree = "<group>";
 		};
-		58483E8E23335605007B773E /* Model */ = {
+		58483E8E23335605007B773E /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				58821468239A1F0A00EA1CEA /* Animator.swift */,
@@ -191,7 +191,7 @@
 				5807440924065DD100BAB6EE /* NewsAttacmentVK.swift */,
 				586E6ED7240C2AE700E4CC74 /* NewsForTable.swift */,
 			);
-			path = Model;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		5882146623991E2500EA1CEA /* Cells */ = {
@@ -547,6 +547,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "MH VK Client 1.0/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -566,6 +567,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "MH VK Client 1.0/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

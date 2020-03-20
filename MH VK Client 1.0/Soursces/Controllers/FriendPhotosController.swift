@@ -26,7 +26,10 @@ class FriendPhotosController: UIViewController  {
     private var propertyAnimator: UIViewPropertyAnimator!
     private var animationDirection: AnimationDirection = .left
     
-    private lazy var photosFromRealm: Results<FriendPhoto> = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", activeAlbum.id)
+    let deleteIfMigration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+
+    
+    private lazy var photosFromRealm: Results<FriendPhoto> = try! Realm(configuration: deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", activeAlbum.id)
     
     var photosToken: NotificationToken?
     
@@ -54,7 +57,7 @@ class FriendPhotosController: UIViewController  {
         super.viewDidLoad()
         
         
-        DispatchQueue.global().async {
+     //   DispatchQueue.global().async {
 
         //загрузка фото из выбранного альбома
             self.networkService.getFriendPhotosFromAlbum(userId: self.activeFriend.id, albumId: self.activeAlbum.id) { [weak self] result in
@@ -68,8 +71,10 @@ class FriendPhotosController: UIViewController  {
                     return
                 }
                 
+          //      DispatchQueue.main.async {
+
                 //удаляем старые записи о фото из базы и записываем полученные из VK
-                guard let realm = try? Realm(configuration: RealmService.deleteIfMigration) else { fatalError() }
+                guard let realm = try? Realm(configuration: Realm.Configuration(deleteRealmIfMigrationNeeded: true)) else { fatalError() }
                 guard let albumVK = realm.object(ofType: FriendAlbum.self, forPrimaryKey: self.activeAlbum.idRealm) else {
                     print("НЕ УДАЛОСЬ ПОЛУЧИТЬ ОБЪЕКТ АЛЬБОМ: \(self.activeAlbum.id)")
                     return }
@@ -79,13 +84,13 @@ class FriendPhotosController: UIViewController  {
                     albumVK.photos.append(objectsIn: albumPhotosVK)
                     
                 }
-                
+            //    }
                 
             case let .failure(error):
                 print("ОШИБКА ПОЛУЧЕНИЕ СПИСКА ФОТО В АЛЬБОМЕ ИЗ VK \(error)")
             }
         }
-        }
+   //     }
         
         //ставим observer на БД
         self.photosToken = self.photosFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
@@ -100,7 +105,7 @@ class FriendPhotosController: UIViewController  {
                 print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ ФОТОГРАФИИ")
                 
                 //считываем данные из базы для размещения во вью
-                self.photosFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
+                self.photosFromRealm = try! Realm(configuration: self.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
                 
                 DispatchQueue.main.async {
 
