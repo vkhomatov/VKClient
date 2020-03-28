@@ -15,6 +15,7 @@
  
  class NetworkService {
     
+    
     static let session: Alamofire.Session = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 20
@@ -22,9 +23,14 @@
         return session
     }()
     
+    
+    
+    
+    
     private let baseUrl = "https://api.vk.com"
     private let versionAPI = "5.92"
     private let token: String
+    //private let unixtime: Time
     
     
     init(token: String) {
@@ -265,13 +271,15 @@
     
     // MARK: - Загрузка новостей в три потока
     
-    func loadNews(completion: ((Swift.Result<([NewsItemVK], [NewsProfileVK], [GroupVK]), Error>) -> Void)? = nil) {
+    func loadNews(lastNewsDate: Double?, nextFrom: String?, completion: ((Swift.Result<([NewsItemVK], [NewsProfileVK], [GroupVK], String), Error>) -> Void)? = nil) {
         let path = "/method/newsfeed.get"
         
         let params: Parameters = [
             "access_token":  Session.shared.accessToken,
             "v": versionAPI,
-            "count": 100,
+            "count": 50,
+            "start_time": lastNewsDate ?? 0,
+            "start_from": nextFrom ?? ""
             //"filters": "post, wall_photo"
         ]
         
@@ -284,10 +292,13 @@
                 var items = [NewsItemVK]()
                 var profiles = [NewsProfileVK]()
                 var groups = [GroupVK]()
+                var startFrom : String = ""
                 
                 DispatchQueue.global().async(group: dispatchGroup) {
                     let itemsJSONs = json["response"]["items"].arrayValue
                     items = itemsJSONs.map  { NewsItemVK(from: $0) }
+                    startFrom = json["response"]["next_from"].stringValue
+
                     // print(items)
                 }
                 
@@ -302,10 +313,15 @@
                     groups = groupsJSONs.map  { GroupVK(from: $0) }
                     // print(groups)
                 }
+//                
+//                DispatchQueue.global().async(group: dispatchGroup) {
+//                    startFrom = json["response"]["next_from"].stringValue
+//                   // print("STARTFROM: \(startFrom)")
+//                }
                 
                 //Работает если только сделать во так - то есть использовать notify
                 dispatchGroup.notify(queue: DispatchQueue.main) {
-                    completion?(.success((items, profiles, groups)))
+                    completion?(.success((items, profiles, groups, startFrom)))
                     print("ОБЪЕКТЫ ITEMS, PROFILES и GROUPS ЗАГРУЖЕНЫ")
                     
                 }

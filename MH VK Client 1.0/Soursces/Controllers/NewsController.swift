@@ -13,55 +13,44 @@ import Kingfisher
 
 
 @available(iOS 13.0, *)
-class NewsController: UITableViewController {
+class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
+    
     
     private let networkService = NetworkService(token: Session.shared.accessToken)
-    // var newsVK = NewsVK()
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     var itemsVK = [NewsItemVK]()
     var profilesVK = [NewsProfileVK]()
     var groupsVK = [GroupVK]()
     
     var newsForTable = [NewsForTable]()
-    //var newForTable = NewsForTable()
     
+    var lastNewsDate: Double = 0
+    var isFetchingMoreNews = false
+    var nextFrom: String?
+    var updateNews: Bool = false
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
-        
-        networkService.loadNews() { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case let .success(itemsVK, profilesVK, groupsVK):
-                
-                self.itemsVK = itemsVK
-                self.profilesVK = profilesVK
-                self.groupsVK = groupsVK
-                
-                if ( self.itemsVK.count > 0 ) {
-                    print("Загружено новостей: \(self.itemsVK.count)")
-                    print("Загружено профилей: \(self.profilesVK.count)")
-                    print("Загружено групп: \(self.groupsVK.count)\n")
-                  //  DispatchQueue.global().async {
-                    self.newsAdapter()  // функция формирования новостного массива
-                  //  }
-                } else {
-                    print("МАССИВ ITEMS ПУСТ\n")
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-                
-            case let .failure(error):
-                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
-            }
-        }
+        tableView.prefetchDataSource = self
+
         
         
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action:  #selector(getNewNews), for: .valueChanged)
+        self.refreshControl = refreshControl
+        refreshControl.tintColor = UIColor(red:0.25, green:0.62, blue:0.85, alpha:1.0)
+       // self.refreshControl.
+       // refreshControl.attributedTitle = NSAttributedString(string: "Refreshing News ...")
+
+
+        
+
+        
+        getNews(lastNewsDateG: nil, nextFromG: nil)
         
         //  DispatchQueue.global().async {
         
@@ -93,6 +82,103 @@ class NewsController: UITableViewController {
         
     }
     
+    
+    func getNews(lastNewsDateG: Double?, nextFromG: String?){
+        
+        networkService.loadNews(lastNewsDate: lastNewsDateG, nextFrom: nextFromG) { [weak self] result in
+             guard let self = self else { return }
+             switch result {
+             case let .success(itemsVK, profilesVK, groupsVK, nextFrom):
+                 
+                 self.itemsVK = itemsVK
+                 self.profilesVK = profilesVK
+                 self.groupsVK = groupsVK
+                 
+                // print("Получено новое значение NEXTFROM: \(String(describing: self.nextFrom))")
+                // print("Дата с которой нужно получить новости: \(self.lastNewsDate)")
+                
+                 if ( self.itemsVK.count > 0 ) {
+                     print("Загружено новостей: \(self.itemsVK.count)")
+                     print("Загружено профилей: \(self.profilesVK.count)")
+                     print("Загружено групп: \(self.groupsVK.count)\n")
+                    
+                    // если не обновление ленты то получаем новый параметр nextFrom
+                    if self.updateNews == false && nextFrom != "" {
+                     self.nextFrom = nextFrom
+                    }
+
+                    print("STARTFROM: \(String(describing: self.nextFrom))")
+
+                     DispatchQueue.main.async {
+                        
+                        // функция формирования новостного массива
+
+                         self.newsAdapter()
+                         self.tableView.reloadData()
+                        
+
+
+                         self.isFetchingMoreNews = false
+                         self.updateNews = false
+
+                     }
+                     
+                 } else {
+                     print("НОВЫХ НОВОСТЕЙ НЕТ\n")
+                    self.updateNews = false
+
+                 }
+                
+               //  self.lastNewsDate = 0
+              //   self.updateNews = false
+
+             case let .failure(error):
+                 print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
+             }
+         }
+    }
+    
+//
+//    override func viewDidAppear(_ animated: Bool) {
+//         super.viewWillAppear(animated)
+//        self.tableView.beginUpdates()
+//
+//         self.tableView.layoutIfNeeded()
+//         self.tableView.setNeedsLayout()
+//        self.tableView.endUpdates()
+//
+//     }
+
+    
+    @objc func getNewNews() {
+        
+     //   if itemsVK.count > 0 {
+
+        print("\nОБНОВЛЕНИЕ НОВОСТЕЙ ....\n ")
+
+        self.refreshControl?.beginRefreshing()
+    
+        // ставим флаг обновления новостей в true
+        self.updateNews = true
+
+        // запращиваем новости начиная с даты первой новости в массиве + 1 секунда
+        self.lastNewsDate = newsForTable[0].dateVK + 1
+        
+        //получаем новые новости с последней даты последней новости в массиве новостей
+        getNews(lastNewsDateG: lastNewsDate, nextFromG: nil)
+            
+     //   self.isFetchingMoreNews = false
+
+        self.refreshControl?.endRefreshing()
+        
+        // ставим флаг обновления новостей в false
+     //   self.updateNews = false
+        
+        print("ОБНОВЛЕНИЕ НОВОСТЕЙ ЗАКОНЧЕНО\n")
+
+    }
+    
+    
     // функция конвертации даты
     func convertTime(time: Double) -> String {
         let dateFormatter = DateFormatter()
@@ -102,14 +188,16 @@ class NewsController: UITableViewController {
         return dateFormatter.string(from: timeStamp)
     }
     
-    
+    // функция формирования новостного массива
     func newsAdapter() {
+        
         
         for new in 0...(itemsVK.count - 1) {
             
             let newForTable = NewsForTable()
             // конвертируем время публикации новости
             newForTable.date = convertTime(time: itemsVK[new].date)
+            newForTable.dateVK =  itemsVK[new].date
             
             // проверяем соответсвует ли автор новости другу или группе
             if itemsVK[new].source_id >= 0 {
@@ -244,163 +332,27 @@ class NewsController: UITableViewController {
             
             print("Кол-во ячеек: \(newForTable.rowsCount)")
             
-            //записываем объект новость в массив
-            newsForTable.append(newForTable)
+            //записываем объект новость в массив новостей
+        
+            // если произошло обновление новостей добавляем новую новость в начало массива с новостями
+            if self.updateNews == true/*self.lastNewsDate > 0*/ {
+                      newsForTable.insert(newForTable, at: new)
+
+            // если получение следующего блока новостей то добавляем новость в конец массива с новостями
+                  } else {
+                      newsForTable.append(newForTable)
+
+                  }
             
         }
         
+        // сбрасываем дату последней новости
+        //self.lastNewsDate = 0
+        self.updateNews = false
+
+
     }
     
-    
-    
-    // функция формирования новостного массива
-    /*   func newsAdapter() {
-     
-     for new in 0...(newsVK.items.count - 1) {
-     
-     let newForTable = NewsForTable()
-     // конвертируем время публикации новости
-     newForTable.date = convertTime(time: newsVK.items[new].date)
-     
-     // проверяем соответсвует ли автор новости другу или группе
-     if newsVK.items[new].source_id >= 0 {
-     for i in (0...newsVK.profiles.count - 1) {
-     if (newsVK.items[new].source_id == newsVK.profiles[i].id) {
-     newForTable.fullName = newsVK.profiles[i].fullName
-     newForTable.avaPhoto = newsVK.profiles[i].mainPhoto
-     }
-     }
-     } else  {   // автор новости соответсвует группе
-     
-     for i in (0...newsVK.groups.count - 1) {
-     if (newsVK.items[new].source_id == (newsVK.groups[i].id * -1))  {
-     newForTable.fullName = newsVK.groups[i].name
-     newForTable.avaPhoto = newsVK.groups[i].imageName
-     }
-     }
-     }
-     
-     newForTable.post_type = newsVK.items[new].post_type
-     newForTable.copy_owner_id = newsVK.items[new].copy_owner_id
-     newForTable.copy_post_id = newsVK.items[new].copy_post_id
-     
-     print("\nАвтор новости: \(newForTable.fullName)")
-     print("Тип новости: \(newsVK.items[new].type)")
-     print("Время публикации: \(newForTable.date)")
-     print("Тип записи: \(newForTable.post_type)")
-     
-     //если тип новости wall_photo
-     if newsVK.items[new].type == "wall_photo" && newsVK.items[new].photos.count > 0 {
-     
-     newForTable.wallphotos = newsVK.items[new].photos
-     newForTable.wallphoto = true
-     newForTable.rowsCount += 1
-     
-     // вытаскиеваем отметки лайкс и т.д. из первого объекта фото
-     newForTable.likeUser = newsVK.items[new].photos[0].likeUser
-     newForTable.likesCount = newsVK.items[new].photos[0].likesCount
-     newForTable.reposts = newsVK.items[new].photos[0].reposts
-     newForTable.views = newsVK.items[new].photos[0].views
-     print("Фото со стены обнаружено: \(newsVK.items[new].photos[0].imageCellURLString)")
-     
-     }
-     
-     //если тип новости post
-     if newsVK.items[new].type == "post" {
-     
-     newForTable.post = true
-     
-     //если тип новости repost
-     if  newsVK.items[new].post_type == "copy" {
-     newForTable.rowsCount += 1
-     newForTable.perepost = true
-     print("Обнаружена новость типа репост: \(newsVK.items[new].post_type)")
-     print("Автор репоста: \(newForTable.copy_owner_id)")
-     print("ID репоста: \(newForTable.copy_post_id)")
-     } else { // если тип новости post
-     
-     // проверяем содержит ли новость текстовый блок
-     if newsVK.items[new].text != "" {
-     newForTable.text = newsVK.items[new].text
-     newForTable.rowsCount += 1
-     newForTable.textrow = true
-     print("Текст новости: \(newsVK.items[new].text)")
-     
-     } else if newsVK.items[new].attachments!.count == 0 {
-     newForTable.rowsCount += 1
-     newForTable.emptynews = true
-     print("Обнаружена пустая новость: \(newsVK.items[new].post_type)")
-     }
-     
-     
-     // вычисляем аттачмент какого типа содержит новость и вытаскиваем объект аттачмента
-     if  (newsVK.items[new].attachments != nil && newsVK.items[new].attachments!.count > 0)  {
-     
-     print("Кол-во аттачментов: \(String(describing: newsVK.items[new].attachments!.count))")
-     
-     newsVK.items[new].attachments!.forEach { print("Тип аттачмента: \($0.typeStr)") }
-     
-     //проверяем есть ли среди аттачментов тип photo и вытаскиваем первый аттачмент photo если он есть
-     let photoObj = newsVK.items[new].attachments!.first(where: { $0.typeStr == "photo" })
-     
-     if photoObj != nil {
-     
-     print("Аттачмент photo обнаружен : \(String(describing: photoObj!.photoObj!.imageCellURLString))")
-     
-     newForTable.attachType = photoObj!.typeStr
-     newForTable.photo = photoObj!.photoObj
-     newForTable.rowsCount += 1
-     newForTable.photorow = true
-     }
-     
-     //проверяем есть ли среди аттачментов тип link и вытаскиваем первый аттачмент link если он есть
-     let linkObj = newsVK.items[new].attachments!.first(where: { $0.typeStr == "link" })
-     
-     if linkObj != nil {
-     newForTable.attachType = linkObj!.typeStr
-     newForTable.link = linkObj!.linkObj
-     newForTable.rowsCount += 1
-     newForTable.linkrow = true
-     
-     print("Аттачмент link обнаружен : \(String(describing: linkObj!.linkObj!.url ))")
-     print("Аттачмент link фото : \(String(describing: linkObj!.linkObj!.photo!.imageCellURLString  ))")
-     }
-     
-     //ставим залушку если тип аттачмента не соответсвует photo или link
-     if linkObj == nil && photoObj == nil {
-     newForTable.attachType = newsVK.items[new].attachments!.first!.typeStr
-     newForTable.rowsCount += 1
-     newForTable.otherrow = true
-     
-     print("Обнаружен аттачмент типа: \(newForTable.attachType)")
-     }
-     
-     }
-     
-     // вытаскиеваем отметки лайкс и т.д. из новости
-     newForTable.likeUser = newsVK.items[new].likeUser
-     newForTable.likesCount = newsVK.items[new].likesCount
-     newForTable.reposts = newsVK.items[new].reposts
-     newForTable.views = newsVK.items[new].views
-     }
-     }
-     
-     if (newsVK.items[new].type != "wall_photo") && (newsVK.items[new].type != "post")   {
-     newForTable.rowsCount += 1
-     newForTable.othernews = true
-     newForTable.attachType = newsVK.items[new].type
-     print("Обнаружена новость типа: \(newsVK.items[new].type)")
-     
-     }
-     
-     print("Кол-во ячеек: \(newForTable.rowsCount)")
-     
-     //записываем объект новость в массив
-     newsForTable.append(newForTable)
-     
-     }
-     
-     } */
     
     
     // MARK: - Table view data source
@@ -420,12 +372,11 @@ class NewsController: UITableViewController {
     //
     //    }
     
-    //    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    //        override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     //
-    //        if newsForTable[indexPath.row]. {
-    //            return 60.0
-    //        } else  { return 15.0 }
-    //    }
+    //         return 100
+    //
+    //        }
     
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -451,6 +402,26 @@ class NewsController: UITableViewController {
         
         let actionsCell = tableView.dequeueReusableCell(withIdentifier: "newsActionsCell", for: indexPath) as! NewsActionsCell
         actionsCell.configure(witch: newsForTable[indexPath.section])
+        
+        
+        // обновляем ячейку с текстовым блоком после увеличения/уменьшения высоты
+        textCell.onSeeMoreDidTap {
+            tableView.beginUpdates()
+            textCell.setNeedsLayout()
+           // textCell.layoutIfNeeded()
+            tableView.endUpdates()
+        }
+        
+        photoCell.cellLayout {
+          //  tableView.beginUpdates()
+
+            
+            photoCell.layoutSubviews()
+         // photoCell.layoutIfNeeded()
+        //    tableView.endUpdates()
+
+            //photoCell.redra
+        }
         
         // новость содержит только неизвестный контент
         if newsForTable[indexPath.section].othernews {
@@ -528,6 +499,7 @@ class NewsController: UITableViewController {
                     case 1 : cell = textCell
                     case 2 :
                         textCell.messageLabel.text = "Новость содержит \(newsForTable[indexPath.section].attachType) аттачмент"
+                        textCell.moreLessButton.isHidden = true
                         cell = textCell
                     case 3 : cell = actionsCell
                     default: return cell
@@ -547,6 +519,7 @@ class NewsController: UITableViewController {
                 
                 // новость содержит только фото аттач
                 if !newsForTable[indexPath.section].textrow && newsForTable[indexPath.section].photorow && !newsForTable[indexPath.section].linkrow && !newsForTable[indexPath.section].otherrow  {
+                    
                     
                     switch indexPath.row {
                     case 0 : cell = headCell
@@ -601,5 +574,33 @@ class NewsController: UITableViewController {
         
     }
     
+
+//    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//                cell.layoutIfNeeded()
+//    }
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+//        guard !isFetchingMoreNews,
+//        let maxSection = indexPaths.map({ $0.section }).max(),
+//        newsForTable.count <= maxSection + 10  else { return }
+        
+        guard !isFetchingMoreNews,
+            let maxSection = indexPaths.map({ $0.section }).max(),
+            newsForTable.count <= maxSection + 20  else { return }
+
+      //  print("!!!!!!!!!!!!!!!! MAXSECTION = \(maxSection)")
+
+
+        isFetchingMoreNews = true
+
+      //  getNews(lastNewsDateG: newsForTable[newsForTable.count-1].dateVK, nextFromG: nextFrom ?? nil)
+         getNews(lastNewsDateG: nil, nextFromG: nextFrom ?? nil)
+        
+        
+       // self.isFetchingMoreNews = false
+
+        
+    }
     
 }
+

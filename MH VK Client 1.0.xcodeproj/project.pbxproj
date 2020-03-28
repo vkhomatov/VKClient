@@ -16,6 +16,7 @@
 		580C787623A4E7A000EE0A2F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580C787523A4E7A000EE0A2F /* NetworkService.swift */; };
 		580C787823A4F50A00EE0A2F /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580C787723A4F50A00EE0A2F /* Session.swift */; };
 		580E4B622338D69A003CFA10 /* FriendPicImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580E4B612338D69A003CFA10 /* FriendPicImageView.swift */; };
+		5815DD32242DC45A00C6F620 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5815DD31242DC45A00C6F620 /* WebKit.framework */; };
 		5831AA6F23DD43DF001BEAB2 /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5831AA6E23DD43DF001BEAB2 /* RealmService.swift */; };
 		58371AA323456AF10079C7AD /* CommunitesPicImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58371AA223456AF10079C7AD /* CommunitesPicImageView.swift */; };
 		583B5985232F068A00375F4A /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583B5984232F068A00375F4A /* FriendsController.swift */; };
@@ -40,6 +41,7 @@
 		5886790B234A8663004F2313 /* FriendPhotosController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5886790A234A8663004F2313 /* FriendPhotosController.swift */; };
 		588C9F0223441A8D007DB7BD /* NewsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588C9F0123441A8D007DB7BD /* NewsController.swift */; };
 		588C9F0423441B6A007DB7BD /* NewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 588C9F0323441B6A007DB7BD /* NewsCell.swift */; };
+		589124D12427D0DB002230CA /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589124D02427D0DB002230CA /* PhotoView.swift */; };
 		58AAD5A7232A39CB00FB34AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAD5A6232A39CB00FB34AF /* AppDelegate.swift */; };
 		58AAD5A9232A39CB00FB34AF /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAD5A8232A39CB00FB34AF /* LoginController.swift */; };
 		58AAD5AC232A39CB00FB34AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58AAD5AA232A39CB00FB34AF /* Main.storyboard */; };
@@ -62,6 +64,7 @@
 		580C787523A4E7A000EE0A2F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		580C787723A4F50A00EE0A2F /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		580E4B612338D69A003CFA10 /* FriendPicImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPicImageView.swift; sourceTree = "<group>"; };
+		5815DD31242DC45A00C6F620 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		5831AA6E23DD43DF001BEAB2 /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		58371AA223456AF10079C7AD /* CommunitesPicImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitesPicImageView.swift; sourceTree = "<group>"; };
 		583B5984232F068A00375F4A /* FriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
@@ -86,6 +89,7 @@
 		5886790A234A8663004F2313 /* FriendPhotosController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPhotosController.swift; sourceTree = "<group>"; };
 		588C9F0123441A8D007DB7BD /* NewsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsController.swift; sourceTree = "<group>"; };
 		588C9F0323441B6A007DB7BD /* NewsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCell.swift; sourceTree = "<group>"; };
+		589124D02427D0DB002230CA /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
 		58AAD5A3232A39CB00FB34AF /* MH VK Client 1.0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MH VK Client 1.0.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		58AAD5A6232A39CB00FB34AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		58AAD5A8232A39CB00FB34AF /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -94,6 +98,9 @@
 		58AAD5B0232A39CC00FB34AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		58AAD5B2232A39CC00FB34AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58BD55B423339F4D00243805 /* FriendAlbumCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAlbumCell.swift; sourceTree = "<group>"; };
+		58C10086242EFD860015CC8C /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C1008D242EFE0D0015CC8C /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		58FDC2EF242EF60D00BCE549 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5815DD32242DC45A00C6F620 /* WebKit.framework in Frameworks */,
 				991E7F0EC482CE2D7D2436C2 /* Pods_MH_VK_Client_1_0.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,8 +165,8 @@
 			children = (
 				58AAD5A6232A39CB00FB34AF /* AppDelegate.swift */,
 				583B5980232F05D100375F4A /* Controllers */,
-				58483E8E23335605007B773E /* Models */,
 				5882146623991E2500EA1CEA /* Cells */,
+				58483E8E23335605007B773E /* Models */,
 				583B5983232F062300375F4A /* Views */,
 				580C787423A4E73500EE0A2F /* Services */,
 			);
@@ -172,6 +180,7 @@
 				580E4B612338D69A003CFA10 /* FriendPicImageView.swift */,
 				58371AA223456AF10079C7AD /* CommunitesPicImageView.swift */,
 				58867906234A5F4B004F2313 /* AlbumPhotosView.swift */,
+				589124D02427D0DB002230CA /* PhotoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -241,6 +250,10 @@
 		BEDD29C38CBCF780FE783931 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				58C1008D242EFE0D0015CC8C /* Alamofire.framework */,
+				58C10086242EFD860015CC8C /* Alamofire.framework */,
+				58FDC2EF242EF60D00BCE549 /* Alamofire.framework */,
+				5815DD31242DC45A00C6F620 /* WebKit.framework */,
 				21689E9332BAFBC30C786D6F /* Pods_MH_VK_Client_1_0.framework */,
 			);
 			name = Frameworks;
@@ -381,6 +394,7 @@
 				588C9F0423441B6A007DB7BD /* NewsCell.swift in Sources */,
 				5882146B239A4A9A00EA1CEA /* CustomNavigationController.swift in Sources */,
 				5886790B234A8663004F2313 /* FriendPhotosController.swift in Sources */,
+				589124D12427D0DB002230CA /* PhotoView.swift in Sources */,
 				586E6ED22408B7C000E4CC74 /* NewsVK.swift in Sources */,
 				583B5987232F075E00375F4A /* FriendAlbumsController.swift in Sources */,
 				583B5985232F068A00375F4A /* FriendsController.swift in Sources */,
@@ -455,7 +469,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: vkhomatov@gmail.com (YRMBX7Q4NG)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -474,7 +488,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -516,7 +530,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: vkhomatov@gmail.com (YRMBX7Q4NG)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -529,7 +543,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -544,8 +558,9 @@
 			baseConfigurationReference = 4E70D2BACC35EAC385BA433B /* Pods-MH VK Client 1.0.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AY6Y7FXTL9;
 				INFOPLIST_FILE = "MH VK Client 1.0/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -554,8 +569,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "MH.MH-VK-Client-1-0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -564,8 +580,9 @@
 			baseConfigurationReference = 450FB74416ACF6D6843D5D02 /* Pods-MH VK Client 1.0.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AY6Y7FXTL9;
 				INFOPLIST_FILE = "MH VK Client 1.0/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -574,8 +591,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "MH.MH-VK-Client-1-0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
