@@ -24,6 +24,7 @@ class NewsForTable {
     var avaPhoto: String = ""
     var fullName: String = ""
     var date: String = ""
+    var dateVK: Double = 0
     var post_type: String = ""
     var copy_owner_id: Int = 0
     var copy_post_id: Int = 0

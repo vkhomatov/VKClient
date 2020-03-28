@@ -48,7 +48,7 @@ class attachPhoto {
     var user_id : Int = 0
     
     var height : Int = 0
-    var widht : Int = 0
+    var width : Int = 0
     
     var imageCellURLString: String = ""
     var imageFullURLString: String = ""
@@ -66,8 +66,8 @@ class attachPhoto {
         self.album_id = json["album_id"].intValue
         self.user_id = json["user_id"].intValue
         
-        self.height = json["height"].intValue
-        self.widht = json["widht"].intValue
+       // self.height = json["height"].intValue
+       // self.width = json["width"].intValue
         
         self.likesCount = json["likes"]["count"].intValue
         self.likeUser = json["likes"]["user_likes"].intValue
@@ -80,18 +80,33 @@ class attachPhoto {
         guard let imageSize = json["sizes"].array?.first(where: { $0["type"] == "s" }) else { return }
         self.imageCellURLString = imageSize["url"].stringValue
         
-        if let imageCellURLString = json["sizes"].array?.first(where: { $0["type"] == "m" })?["url"].string {
+        self.height = (json["sizes"].array?.first?["height"].int)!
+        self.width = (json["sizes"].array?.first?["width"].int)!
+        
+        
+        if let imageCellURLString = json["sizes"].array?.first(where: { $0["type"] == "m" } )?["url"].string {
             self.imageCellURLString = imageCellURLString
             
+            self.height = (json["sizes"].array?.first?["height"].int)!
+            self.width = (json["sizes"].array?.first?["width"].int)!
+            
         }
+        
+       // self.height =
         
         self.imageFullURLString = self.imageCellURLString
         
         if let sizes = json["sizes"].array?
             .filter({ ["w", "z", "y", "x", "m"].contains($0["type"]) })
             .sorted(by: { $0["width"].intValue * $0["height"].intValue > $1["width"].intValue * $1["height"].intValue }),
+            
             let photoUrlString = sizes.first?["url"].string {
             self.imageFullURLString = photoUrlString
+            
+            self.height = (sizes.first?["height"].int)!
+            self.width = (sizes.first?["width"].int)!
+
+
         }
         
     }
