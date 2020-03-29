@@ -385,7 +385,7 @@
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f4z-tU-3Kn" customClass="AlbumPhotosView" customModule="MH_VK_Client_1_0" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="0e6-0J-1Iz">
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0e6-0J-1Iz">
                                 <rect key="frame" x="0.0" y="56" width="414" height="44"/>
                                 <items>
                                     <navigationItem title="Photos" id="vzG-Jm-cxr">
@@ -509,9 +509,8 @@
                                             </userDefinedRuntimeAttributes>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nCa-2L-dXa">
-                                            <rect key="frame" x="86" y="11" width="308" height="46"/>
+                                            <rect key="frame" x="86" y="25.5" width="308" height="17"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="46" id="13f-dU-aRg"/>
                                                 <constraint firstAttribute="width" constant="308" id="Ngf-QI-xXl"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -631,7 +630,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="54"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RZ8-TE-POc">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RZ8-TE-POc">
                                             <rect key="frame" x="10" y="10" width="394" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="e3t-Nm-yNC"/>
@@ -901,15 +900,15 @@
                             <textInputTraits key="textInputTraits"/>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="groupsCell" rowHeight="68" id="t53-pZ-Zd1" userLabel="CommunitesCell" customClass="GroupCell" customModule="MH_VK_Client_1_0" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="72" width="414" height="68"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="groupsCell" id="t53-pZ-Zd1" userLabel="CommunitesCell" customClass="GroupCell" customModule="MH_VK_Client_1_0" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="72" width="414" height="68.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t53-pZ-Zd1" id="lJo-Tu-lmj">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="68"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="68.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iLO-Hu-7IT" customClass="CommunitesPicImageView" customModule="MH_VK_Client_1_0" customModuleProvider="target">
-                                            <rect key="frame" x="16" y="9" width="50" height="50"/>
+                                            <rect key="frame" x="16" y="9.5" width="50" height="50"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="50" id="H3F-e5-32B"/>
@@ -928,10 +927,9 @@
                                             </userDefinedRuntimeAttributes>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TT4-kk-mgR">
-                                            <rect key="frame" x="86" y="11" width="308" height="46"/>
+                                            <rect key="frame" x="86" y="26.5" width="308" height="16"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="308" id="M8Y-xk-wjs"/>
-                                                <constraint firstAttribute="height" constant="46" id="lDQ-Q2-5zv"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <nil key="textColor"/>

@@ -271,7 +271,7 @@
     
     // MARK: - Загрузка новостей в три потока
     
-    func loadNews(lastNewsDate: Double?, nextFrom: String?, completion: ((Swift.Result<([NewsItemVK], [NewsProfileVK], [GroupVK], String), Error>) -> Void)? = nil) {
+    func loadNews(lastNewsDate: Double?, nextFrom: String?, completion: @escaping (Swift.Result<([NewsItemVK], [NewsProfileVK], [GroupVK], String), Error>) -> Void) {
         let path = "/method/newsfeed.get"
         
         let params: Parameters = [
@@ -313,22 +313,16 @@
                     groups = groupsJSONs.map  { GroupVK(from: $0) }
                     // print(groups)
                 }
-//                
-//                DispatchQueue.global().async(group: dispatchGroup) {
-//                    startFrom = json["response"]["next_from"].stringValue
-//                   // print("STARTFROM: \(startFrom)")
-//                }
                 
                 //Работает если только сделать во так - то есть использовать notify
                 dispatchGroup.notify(queue: DispatchQueue.main) {
-                    completion?(.success((items, profiles, groups, startFrom)))
+                    completion(.success((items, profiles, groups, startFrom)))
                     print("ОБЪЕКТЫ ITEMS, PROFILES и GROUPS ЗАГРУЖЕНЫ")
                     
                 }
                 
-                
             case let .failure(error):
-                completion?(.failure(error))
+                completion(.failure(error))
                 print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТОВ ITEMS, PROFILES и GROUPS")
                 
             }

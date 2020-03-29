@@ -29,8 +29,8 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
                 group = allCommunitesController.searchGroups[indexPath.row] }
             
             if !groupsVK.contains(where: { $0.name == group.name }) {
-                groupsVK.append(group)
-                tableView.insertRows(at: [IndexPath(row: groupsVK.count - 1, section: 0)], with: .fade)
+                groupsVK.insert(group, at: 0)
+                tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .fade)
                 
             }
         }
@@ -41,6 +41,8 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
         myGroupSearch.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
+        myGroupSearch.placeholder = "Search"
+
         
         DispatchQueue.global().async {
 

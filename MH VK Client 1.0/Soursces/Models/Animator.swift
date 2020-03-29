@@ -6,7 +6,7 @@
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 
 /*class Animator: NSObject, UIViewControllerAnimatedTransitioning {
     private let animationDuration: TimeInterval = 1

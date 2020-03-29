@@ -30,6 +30,7 @@ class FriendPhoto: Object {
         self.likesCount = json["likes"]["count"].intValue
         self.likeUser = json["likes"]["user_likes"].intValue
         
+        
         guard let imageSize = json["sizes"].array?.first(where: { $0["type"] == "s" }) else { return }
         self.imageCellURLString = imageSize["url"].stringValue
         

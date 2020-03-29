@@ -63,6 +63,8 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
         tableView.dataSource = self
         tableView.delegate = self
         
+        frendsSearch.placeholder = "Search"
+        
         //  загружаем друзей из базы если в существующей базе есть друзья
         if friendsVK.count > 0 {
             FriendSetup()

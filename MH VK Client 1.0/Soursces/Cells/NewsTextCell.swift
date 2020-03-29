@@ -20,11 +20,12 @@ class NewsTextCell: UITableViewCell {
        }
     
     
-    @IBOutlet weak var messageLabel: UILabel! {
-        didSet {
-            messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        }
-    }
+    @IBOutlet weak var messageLabel: UILabel!
+//        {
+//        didSet {
+//            messageLabel.translatesAutoresizingMaskIntoConstraints = false
+//        }
+//    }
     
     let textMaxHeight = 200.0
 

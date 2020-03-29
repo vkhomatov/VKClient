@@ -24,6 +24,9 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         tableView.dataSource = self
         tableView.delegate = self
         
+        allGroupSearch.placeholder = "Search"
+
+        
         DispatchQueue.global().async {
 
             self.networkService.searchGroups(userId: Session.shared.usedId, search: "А") { result in
