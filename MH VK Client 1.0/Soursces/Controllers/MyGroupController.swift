@@ -2,7 +2,7 @@
 //  MyCommunitesController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 16/09/2019.
+//  Created by Vitaly Khomatov on 16/09/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
     private let networkService = NetworkService(token: Session.shared.accessToken)
     var searchGroups = [GroupVK]()
     var seach: Bool = false
-        
+    
     @IBAction func returnToMyCommunites(unwindSegue: UIStoryboardSegue) {
         if unwindSegue.identifier == "addGroups" {
             
@@ -24,15 +24,14 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
             guard let indexPath = allCommunitesController.tableView.indexPathForSelectedRow else { return }
             
             var group = allCommunitesController.allGroups[indexPath.row]
-
+            
             if allCommunitesController.search {
-            group = allCommunitesController.searchGroups[indexPath.row] }
+                group = allCommunitesController.searchGroups[indexPath.row] }
             
             if !groupsVK.contains(where: { $0.name == group.name }) {
-                groupsVK.append(group)
-                tableView.insertRows(at: [IndexPath(row: groupsVK.count - 1, section: 0)], with: .fade)
-              //  tableView.reloadData()
-
+                groupsVK.insert(group, at: 0)
+                tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .fade)
+                
             }
         }
     }
@@ -42,8 +41,12 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
         myGroupSearch.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
+        myGroupSearch.placeholder = "Search"
+
         
-        networkService.loadGroups(userId: Session.shared.usedId) { result in
+        DispatchQueue.global().async {
+
+            self.networkService.loadGroups(userId: Session.shared.usedId) { result in
             switch result {
             case let .success(groups):
                 self.groupsVK = groups
@@ -52,19 +55,19 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
-             //   print("НОВАЯ ЗАГРУЗКА !!!!!!!!!!!!!!!!!!!!!!!")
-
+                
             case let .failure(error):
                 print(error)
             }
         }
-
+        }
+        
     }
-
+    
     
     func searchBar(_ myCommunitesSearch: UISearchBar, textDidChange searchText: String) {
         
-      //  searchCommunites.groups = myCommunites.groups.filter({$0.name.prefix(searchText.count) == searchText})
+        //  searchCommunites.groups = myCommunites.groups.filter({$0.name.prefix(searchText.count) == searchText})
         searchGroups = groupsVK.filter({$0.name.prefix(searchText.count) == searchText})
         seach = true
         tableView.reloadData()
@@ -76,37 +79,35 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if seach {
             return searchGroups.count
         } else {
             return groupsVK.count
-
+            
         }
     }
-
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "groupsCell", for: indexPath) as! GroupCell
         
         if seach {
             
             cell.configure(witch: searchGroups[indexPath.row])
-            //cell.CommunitesName.text = searchCommunites.groups[indexPath.row].name
-           // cell.CommunitesPic?.image = searchCommunites.groups[indexPath.row].pic
+            
         } else {
             cell.configure(witch: groupsVK[indexPath.row])
-           // cell.CommunitesName.text = myCommunites.groups[indexPath.row].name
-           // cell.CommunitesPic?.image = myCommunites.groups[indexPath.row].pic
+            
         }
         
         return cell
     }
     
     // MARK: - Table view delegate
-
+    
     
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -114,7 +115,6 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-
     
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -140,6 +140,6 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-
-
+    
+    
 }

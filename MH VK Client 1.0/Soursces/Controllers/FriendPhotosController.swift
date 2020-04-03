@@ -2,7 +2,7 @@
 //  FriendPhotosViewController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 06/10/2019.
+//  Created by Vitaly Khomatov on 06/10/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -26,33 +26,13 @@ class FriendPhotosController: UIViewController  {
     private var propertyAnimator: UIViewPropertyAnimator!
     private var animationDirection: AnimationDirection = .left
     
-    private lazy var photosFromRealm: Results<FriendPhoto> = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", activeAlbum.id)
+    let deleteIfMigration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+
+    
+    private lazy var photosFromRealm: Results<FriendPhoto> = try! Realm(configuration: deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", activeAlbum.id)
     
     var photosToken: NotificationToken?
     
-    
-    //        func pairTableAndRealm() {
-    //                 //  guard let realm = try? Realm() else { return }
-    //                 //  friends = realm.objects(FriendVK.self)
-    //                   photosToken = self.photosFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
-    //                    guard let viewPhotos = self?.friendPhotosShow else { return }
-    //                       switch changes {
-    //                       case .initial:
-    //                        viewPhotos.setNeedsDisplay()
-    //                       case .update://(_, let deletion, let insertion, let modification):
-    //                           print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ ФОТОГРАФИИ")
-    //                        viewPhotos.setNeedsDisplay()
-    //
-    //     //                       tableView.beginUpdates()
-    //     //                    tableView.insertRows(at: insertion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    //     //                     tableView.deleteRows(at: deletion.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    //     //                     tableView.reloadRows(at: modification.map({_ in IndexPath(row: 0, section: 0)}) , with: .automatic)
-    //     //                      tableView.endUpdates()
-    //                       case .error(let error):
-    //                           fatalError("\(error)")
-    //                       }
-    //                   }
-    //               }
     
     
     @IBAction func FriendPhotoWinCloseButton(_ sender: Any) {
@@ -72,32 +52,15 @@ class FriendPhotosController: UIViewController  {
         
     }
     
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        super.viewWillAppear(animated)
-    //
-    //
-    //
-    //    }
-    
-//    func PhotoSetup(){
-//        //считываем данные из базы для размещения во вью
-//        self.photosFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
-//
-//
-//        //загружаем фото во вью
-//        self.friendPhotosShow.FriendPhotoImageView1.kf.setImage(with: URL(string: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].imageFullURLString))
-//
-//        //устанавливаем кол-во лайков и юзерлайк для фото
-//        self.isLiked(likeCount: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount, likeUser: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likeUser)
-//
-//        print("КОЛ-ВО ЛАЙКОВ: \(self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount)")
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+     //   DispatchQueue.global().async {
+
         //загрузка фото из выбранного альбома
-        networkService.getFriendPhotosFromAlbum(userId: activeFriend.id, albumId: activeAlbum.id) { [weak self] result in
+            self.networkService.getFriendPhotosFromAlbum(userId: self.activeFriend.id, albumId: self.activeAlbum.id) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -108,8 +71,10 @@ class FriendPhotosController: UIViewController  {
                     return
                 }
                 
+          //      DispatchQueue.main.async {
+
                 //удаляем старые записи о фото из базы и записываем полученные из VK
-                guard let realm = try? Realm(configuration: RealmService.deleteIfMigration) else { fatalError() }
+                guard let realm = try? Realm(configuration: Realm.Configuration(deleteRealmIfMigrationNeeded: true)) else { fatalError() }
                 guard let albumVK = realm.object(ofType: FriendAlbum.self, forPrimaryKey: self.activeAlbum.idRealm) else {
                     print("НЕ УДАЛОСЬ ПОЛУЧИТЬ ОБЪЕКТ АЛЬБОМ: \(self.activeAlbum.id)")
                     return }
@@ -119,17 +84,13 @@ class FriendPhotosController: UIViewController  {
                     albumVK.photos.append(objectsIn: albumPhotosVK)
                     
                 }
-                
-                
-                
-                
-                
-                
+            //    }
                 
             case let .failure(error):
                 print("ОШИБКА ПОЛУЧЕНИЕ СПИСКА ФОТО В АЛЬБОМЕ ИЗ VK \(error)")
             }
         }
+   //     }
         
         //ставим observer на БД
         self.photosToken = self.photosFromRealm.observe { [weak self] (changes:RealmCollectionChange) in
@@ -144,41 +105,39 @@ class FriendPhotosController: UIViewController  {
                 print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ ФОТОГРАФИИ")
                 
                 //считываем данные из базы для размещения во вью
-                self.photosFromRealm = try! Realm(configuration: RealmService.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
+                self.photosFromRealm = try! Realm(configuration: self.deleteIfMigration).objects(FriendPhoto.self).filter("albumId == %@", self.activeAlbum.id)
                 
-                
+                DispatchQueue.main.async {
+
                 //загружаем фото во вью
                 self.friendPhotosShow.FriendPhotoImageView1.kf.setImage(with: URL(string: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].imageFullURLString))
                 
                 //устанавливаем кол-во лайков и юзерлайк для фото
                 self.isLiked(likeCount: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount, likeUser: self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likeUser)
-                
+                }
                 
                 print("КОЛ-ВО ЛАЙКОВ: \(self.photosFromRealm[self.friendPhotosShow.selectedAlbumPhotoIndex].likesCount)")
-                // self.PhotoSetup()
-                
-                
-                
-                //viewPhotos.setNeedsDisplay()
-                
-                
                 
                 
             case .error(let error):
                 fatalError("\(error)")
             }
         }
+            
+            
+        DispatchQueue.main.async {
         
+            let panGR = UIPanGestureRecognizer(target: self, action: #selector(self.viewPanned(_:)))
+            self.view.addGestureRecognizer(panGR)
+            }
         
-        let panGR = UIPanGestureRecognizer(target: self, action: #selector(viewPanned(_:)))
-        view.addGestureRecognizer(panGR)
-        
+    
     }
     
     
     deinit {
-            photosToken?.invalidate()
-        }
+        photosToken?.invalidate()
+    }
     
     
     //функция перелистывания вью с фото

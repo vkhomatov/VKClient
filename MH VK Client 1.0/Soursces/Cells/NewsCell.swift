@@ -2,7 +2,7 @@
 //  NewsCell.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 02/10/2019.
+//  Created by Vitaly Khomatov on 02/10/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -73,16 +73,8 @@ class NewsCell: UITableViewCell {
         shareCountLabel.text = "0"
         like = false
         
-        //   likeButton.titleLabel?.textColor = .red
-        
-        
         
     }
     
-    /*    override func setSelected(_ selected: Bool, animated: Bool) {
-     super.setSelected(selected, animated: animated)
-     
-     // Configure the view for the selected state
-     } */
-    
+  
 }
