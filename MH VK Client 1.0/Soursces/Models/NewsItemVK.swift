@@ -50,9 +50,6 @@ class NewsItemVK {
         let wallphotosJSONs = json["photos"]["items"].arrayValue
         self.photos = wallphotosJSONs.map { attachPhoto(from: $0) }
         
-//        print("post_type: \(post_type)")
-//        print("copy_owner_id: \(copy_owner_id)")
-//        print("copy_post_id: \(copy_post_id)")
 
         
     }

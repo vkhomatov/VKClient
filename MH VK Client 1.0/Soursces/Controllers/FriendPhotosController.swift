@@ -2,7 +2,7 @@
 //  FriendPhotosViewController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 06/10/2019.
+//  Created by Vitaly Khomatov on 06/10/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 

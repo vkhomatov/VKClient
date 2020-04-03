@@ -2,7 +2,7 @@
 //  NewsController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 02/10/2019.
+//  Created by Vitaly Khomatov on 02/10/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -10,6 +10,8 @@
 
 import UIKit
 import Kingfisher
+import RealmSwift
+
 
 
 @available(iOS 13.0, *)
@@ -29,26 +31,19 @@ class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
     var isFetchingMoreNews = false
     var nextFrom: String?
     var updateNews: Bool = false
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
         tableView.prefetchDataSource = self
-
-        
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action:  #selector(getNewNews), for: .valueChanged)
         self.refreshControl = refreshControl
         refreshControl.tintColor = UIColor(red:0.25, green:0.62, blue:0.85, alpha:1.0)
-       // self.refreshControl.
-       // refreshControl.attributedTitle = NSAttributedString(string: "Refreshing News ...")
-
-
-        
-
+        // refreshControl.attributedTitle = NSAttributedString(string: "Refreshing News ...")
         
         getNews(lastNewsDateG: nil, nextFromG: nil)
         
@@ -86,96 +81,68 @@ class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
     func getNews(lastNewsDateG: Double?, nextFromG: String?){
         
         networkService.loadNews(lastNewsDate: lastNewsDateG, nextFrom: nextFromG) { [weak self] result in
-             guard let self = self else { return }
-             switch result {
-             case let .success(itemsVK, profilesVK, groupsVK, nextFrom):
-                 
-                 self.itemsVK = itemsVK
-                 self.profilesVK = profilesVK
-                 self.groupsVK = groupsVK
-                 
-                // print("Получено новое значение NEXTFROM: \(String(describing: self.nextFrom))")
-                // print("Дата с которой нужно получить новости: \(self.lastNewsDate)")
+            guard let self = self else { return }
+            switch result {
+            case let .success(itemsVK, profilesVK, groupsVK, nextFrom):
                 
-                 if ( self.itemsVK.count > 0 ) {
-                     print("Загружено новостей: \(self.itemsVK.count)")
-                     print("Загружено профилей: \(self.profilesVK.count)")
-                     print("Загружено групп: \(self.groupsVK.count)\n")
+                self.itemsVK = itemsVK
+                self.profilesVK = profilesVK
+                self.groupsVK = groupsVK
+                
+                if ( self.itemsVK.count > 0 ) {
+                    print("Загружено новостей: \(self.itemsVK.count)")
+                    print("Загружено профилей: \(self.profilesVK.count)")
+                    print("Загружено групп: \(self.groupsVK.count)\n")
                     
                     // если не обновление ленты то получаем новый параметр nextFrom
                     if self.updateNews == false && nextFrom != "" {
-                     self.nextFrom = nextFrom
+                        self.nextFrom = nextFrom
                     }
-
+                    
                     print("STARTFROM: \(String(describing: self.nextFrom))")
-
-                     DispatchQueue.main.async {
+                    
+                    DispatchQueue.main.async {
                         
                         // функция формирования новостного массива
-
-                         self.newsAdapter()
-                         self.tableView.reloadData()
+                        self.newsAdapter()
+                        self.tableView.reloadData()
+                        self.isFetchingMoreNews = false
+                        self.updateNews = false
                         
-
-
-                         self.isFetchingMoreNews = false
-                         self.updateNews = false
-
-                     }
-                     
-                 } else {
-                     print("НОВЫХ НОВОСТЕЙ НЕТ\n")
+                    }
+                    
+                } else {
+                    print("НОВЫХ НОВОСТЕЙ НЕТ\n")
                     self.updateNews = false
-
-                 }
+                    
+                }
                 
-               //  self.lastNewsDate = 0
-              //   self.updateNews = false
-
-             case let .failure(error):
-                 print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
-             }
-         }
+            case let .failure(error):
+                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS: \(error)")
+            }
+        }
     }
     
-//
-//    override func viewDidAppear(_ animated: Bool) {
-//         super.viewWillAppear(animated)
-//        self.tableView.beginUpdates()
-//
-//         self.tableView.layoutIfNeeded()
-//         self.tableView.setNeedsLayout()
-//        self.tableView.endUpdates()
-//
-//     }
-
     
     @objc func getNewNews() {
-        
-     //   if itemsVK.count > 0 {
-
+                
         print("\nОБНОВЛЕНИЕ НОВОСТЕЙ ....\n ")
-
+        
         self.refreshControl?.beginRefreshing()
-    
+        
         // ставим флаг обновления новостей в true
         self.updateNews = true
-
+        
         // запращиваем новости начиная с даты первой новости в массиве + 1 секунда
         self.lastNewsDate = newsForTable[0].dateVK + 1
         
         //получаем новые новости с последней даты последней новости в массиве новостей
         getNews(lastNewsDateG: lastNewsDate, nextFromG: nil)
-            
-     //   self.isFetchingMoreNews = false
-
+                
         self.refreshControl?.endRefreshing()
         
-        // ставим флаг обновления новостей в false
-     //   self.updateNews = false
-        
         print("ОБНОВЛЕНИЕ НОВОСТЕЙ ЗАКОНЧЕНО\n")
-
+        
     }
     
     
@@ -331,26 +298,20 @@ class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
             }
             
             print("Кол-во ячеек: \(newForTable.rowsCount)")
-            
-            //записываем объект новость в массив новостей
-        
+                        
             // если произошло обновление новостей добавляем новую новость в начало массива с новостями
-            if self.updateNews == true/*self.lastNewsDate > 0*/ {
-                      newsForTable.insert(newForTable, at: new)
-
-            // если получение следующего блока новостей то добавляем новость в конец массива с новостями
-                  } else {
-                      newsForTable.append(newForTable)
-
-                  }
+            if self.updateNews {
+                newsForTable.insert(newForTable, at: new)
+            } else {
+                // если получение следующего блока новостей то добавляем новость в конец массива с новостями
+                newsForTable.append(newForTable)
+            }
             
         }
-        
-        // сбрасываем дату последней новости
-        //self.lastNewsDate = 0
+
         self.updateNews = false
-
-
+        
+        
     }
     
     
@@ -408,20 +369,16 @@ class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
         textCell.onSeeMoreDidTap {
             tableView.beginUpdates()
             textCell.setNeedsLayout()
-           // textCell.layoutIfNeeded()
             tableView.endUpdates()
         }
-        
-        photoCell.cellLayout {
-          //  tableView.beginUpdates()
-
-            
-            photoCell.layoutSubviews()
-         // photoCell.layoutIfNeeded()
-        //    tableView.endUpdates()
-
-            //photoCell.redra
-        }
+//        
+//        photoCell.cellLayout {
+////            tableView.beginUpdates()
+////            photoCell.frame.size.height = 200
+////            photoCell.setNeedsDisplay()
+////            tableView.endUpdates()
+//
+//        }
         
         // новость содержит только неизвестный контент
         if newsForTable[indexPath.section].othernews {
@@ -574,31 +531,22 @@ class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
         
     }
     
-
-//    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//                cell.layoutIfNeeded()
-//    }
+    
+    //    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    //                cell.layoutIfNeeded()
+    //    }
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-//        guard !isFetchingMoreNews,
-//        let maxSection = indexPaths.map({ $0.section }).max(),
-//        newsForTable.count <= maxSection + 10  else { return }
         
         guard !isFetchingMoreNews,
             let maxSection = indexPaths.map({ $0.section }).max(),
             newsForTable.count <= maxSection + 20  else { return }
-
-      //  print("!!!!!!!!!!!!!!!! MAXSECTION = \(maxSection)")
-
-
+        
         isFetchingMoreNews = true
-
-      //  getNews(lastNewsDateG: newsForTable[newsForTable.count-1].dateVK, nextFromG: nextFrom ?? nil)
-         getNews(lastNewsDateG: nil, nextFromG: nextFrom ?? nil)
+        
+        getNews(lastNewsDateG: nil, nextFromG: nextFrom ?? nil)
         
         
-       // self.isFetchingMoreNews = false
-
         
     }
     

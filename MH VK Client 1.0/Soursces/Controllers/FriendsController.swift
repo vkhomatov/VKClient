@@ -2,7 +2,7 @@
 //  FriendsController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 16/09/2019.
+//  Created by Vitaly Khomatov on 16/09/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -110,7 +110,7 @@ class FriendsController: UITableViewController, UISearchBarDelegate {
                 guard let realm = try? Realm(configuration: self.deleteIfMigration) else { fatalError() }
                 print("Realm \(String(describing: self.deleteIfMigration.fileURL!))" )
                 try? realm.write { realm.add(friends, update: .all) }
-                self.friendsVK = try! Realm(configuration: self.deleteIfMigration).objects(FriendVK.self)
+             //   self.friendsVK = try! Realm(configuration: self.deleteIfMigration).objects(FriendVK.self)
         }.catch { error in
             self.show(error as! UIViewController, sender: Any?.self) //у меня только вот так error работает, почему?
             print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ")

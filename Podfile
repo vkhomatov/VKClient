@@ -4,6 +4,7 @@
 target 'MH VK Client 1.0' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
+  #use_modular_headers!
 
   pod 'Alamofire', '~> 5.0.5'
   pod 'SwiftyJSON', '~> 5.0.0'

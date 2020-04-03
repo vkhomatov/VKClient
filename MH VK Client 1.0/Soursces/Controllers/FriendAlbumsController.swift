@@ -2,7 +2,7 @@
 //  FriendProfileController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 16/09/2019.
+//  Created by Vitaly Khomatov on 16/09/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 

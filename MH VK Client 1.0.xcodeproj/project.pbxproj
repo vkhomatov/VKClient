@@ -100,6 +100,7 @@
 		58BD55B423339F4D00243805 /* FriendAlbumCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAlbumCell.swift; sourceTree = "<group>"; };
 		58C10086242EFD860015CC8C /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		58C1008D242EFE0D0015CC8C /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		58C1D3742435973800C7360E /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		58FDC2EF242EF60D00BCE549 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -165,8 +166,8 @@
 			children = (
 				58AAD5A6232A39CB00FB34AF /* AppDelegate.swift */,
 				583B5980232F05D100375F4A /* Controllers */,
-				5882146623991E2500EA1CEA /* Cells */,
 				58483E8E23335605007B773E /* Models */,
+				5882146623991E2500EA1CEA /* Cells */,
 				583B5983232F062300375F4A /* Views */,
 				580C787423A4E73500EE0A2F /* Services */,
 			);
@@ -250,6 +251,7 @@
 		BEDD29C38CBCF780FE783931 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				58C1D3742435973800C7360E /* Alamofire.framework */,
 				58C1008D242EFE0D0015CC8C /* Alamofire.framework */,
 				58C10086242EFD860015CC8C /* Alamofire.framework */,
 				58FDC2EF242EF60D00BCE549 /* Alamofire.framework */,

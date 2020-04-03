@@ -2,7 +2,7 @@
 //  FriendAlbum.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 13.01.2020.
+//  Created by Vitaly Khomatov on 13.01.2020.
 //  Copyright © 2020 Macrohard. All rights reserved.
 //
 
@@ -30,6 +30,15 @@ class FriendAlbum: Object {
         self.title = json["title"].stringValue
         self.photosCount = json["size"].intValue
         self.idRealm = json["id"].intValue
+        
+//        if let sizes = json["sizes"].array?
+//                   .filter({ ["w", "z", "y", "x", "m"].contains($0["type"]) })
+//                   .sorted(by: { $0["type"] > $1["type"] }),
+//                   let photoUrlString = sizes.first?["src"].string {
+//                   self.coverPhoto = photoUrlString
+//               }
+//        print("self.coverPhoto = \(self.coverPhoto)")
+
 
         if self.id < 0  {
             self.idRealm += self.ownerId

@@ -116,6 +116,7 @@
             "access_token": token,
             "owner_id": userId,
             "need_covers": 1,
+         //   "photo_sizes": 1,
             "need_system": 1,
             "v": versionAPI
         ]

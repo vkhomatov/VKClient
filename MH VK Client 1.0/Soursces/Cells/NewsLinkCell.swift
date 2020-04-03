@@ -30,12 +30,6 @@ class NewsLinkCell: UITableViewCell {
         linkDescription.text = nil
         linkUrl.text = nil
         
-        
-//        linkPhoto.layer.cornerRadius = 20
-//        super.layoutSubviews()
-
-
-        
     }
     
     public func configure(witch news: NewsForTable) {

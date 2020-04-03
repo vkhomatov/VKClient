@@ -2,7 +2,7 @@
 //  FriendPhoto.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 16.12.2019.
+//  Created by Vitaly Khomatov on 16.12.2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -42,11 +42,12 @@ class FriendPhoto: Object {
         
         if let sizes = json["sizes"].array?
             .filter({ ["w", "z", "y", "x", "m"].contains($0["type"]) })
-            .sorted(by: { $0["width"].intValue * $0["height"].intValue > $1["width"].intValue * $1["height"].intValue }),
+            .sorted(by: { $0["type"] > $1["type"] }),
             let photoUrlString = sizes.first?["url"].string {
             self.imageFullURLString = photoUrlString
         }
         
+       // print("self.imageFullURLString = \(self.imageFullURLString)")
     }
     
     override static func primaryKey() -> String? {

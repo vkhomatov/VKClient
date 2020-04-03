@@ -13,37 +13,44 @@ class NewsPhotoCell: UITableViewCell {
     
 //    override var intrinsicContentSize: CGSize {
 //
-//        return newsPhoto.intrinsicContentSize
+//        if let myImage = self.newsPhoto.image {
+//            let myImageWidth = myImage.size.width
+//            let myImageHeight = myImage.size.height
+//            let myViewWidth = self.frame.size.width
+//
+//            let ratio = myViewWidth/myImageWidth
+//            let scaledHeight = myImageHeight * ratio
+//
+//            return CGSize(width: myViewWidth, height: scaledHeight)
+//        }
+//
+//        return CGSize(width: -1.0, height: -1.0)
 //    }
-//    
+    
     
     
     @IBOutlet weak var newsPhoto: UIImageView!
     
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//    }
-    
     
     override func layoutSubviews() {
         super.layoutSubviews()
-newsPhoto.setNeedsLayout()
-
-    //    newsPhoto.frame = contentView.bounds
-       // configure(witch: NewsForTable)
+        // newsPhoto.layoutIfNeeded()
     }
-    private var photoLoadHandler: (() -> Void)?
-
-
-    func cellLayout(_ handler: @escaping () -> Void) {
-
-              self.photoLoadHandler = handler
-          }
-
     
+//    private var photoLoadHandler: (() -> Void)?
+//
+//
+//    func cellLayout(_ handler: @escaping () -> Void) {
+//
+//    //    print("self.frame.size.height = \(self.frame.size.height)")
+//              self.photoLoadHandler = handler
+//      //  self.frame.size.height = 200.0
+//          }
+
     
     override func prepareForReuse() {
         super.prepareForReuse()
+      //  self.frame.size.height = 200.0
         newsPhoto.image = nil
 
     }
@@ -56,14 +63,12 @@ newsPhoto.setNeedsLayout()
             if news.photo != nil {
                 
                 self.newsPhoto.kf.setImage(with: URL(string: news.photo!.imageFullURLString))
-             //   self.newsPhoto.setNeedsLayout()
+               // self.frame.size.height = 200.0
 
-                self.layoutSubviews()
-                self.photoLoadHandler?()
+              //  self.layoutSubviews()
+                self.setNeedsDisplay()
 
-              //  setNeedsDisplay()
-             //   self.layoutIfNeeded()
-
+              //  self.photoLoadHandler?()
                
             }
         }
@@ -72,28 +77,12 @@ newsPhoto.setNeedsLayout()
             if news.wallphotos[0].imageCellURLString != "" {
                 
                 self.newsPhoto.kf.setImage(with: URL(string: news.wallphotos[0].imageFullURLString))
-          //      self.newsPhoto.setNeedsLayout()
-                self.photoLoadHandler?()
+              //  self.photoLoadHandler?()
                 self.layoutSubviews()
-
-
-              //  self.layoutIfNeeded()
-
-//                let cellheight = Int(CGFloat(news.wallphotos[0].height) / (CGFloat(news.wallphotos[0].width) / CGFloat(self.frame.size.width)))
-//                self.newsPhoto.heightAnchor.constraint(equalToConstant: CGFloat(cellheight)).isActive = true
-              //  setNeedsDisplay()
                 
             }
         }
     }
-    
-    //    public func configure_wallphoto(witch news: NewsForTable) {
-    //
-    //        if news.wallphotos[0].imageCellURLString != "" {
-    //            self.newsPhoto.kf.setImage(with: URL(string: news.wallphotos[0].imageCellURLString))
-    //
-    //        }
-    //    }
-    
+
     
 }

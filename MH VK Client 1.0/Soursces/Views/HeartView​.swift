@@ -2,7 +2,7 @@
 //  HeartView​.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 26/09/2019.
+//  Created by Vitaly Khomatov on 26/09/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -23,13 +23,6 @@ class HeartView​: UIControl {
         drawHeart(red: isLiked)
         
     }
-    
-    
-//    required init(likeCount: Int, likeUser: Bool) {
-//          self.init()
-//        self.likeCount = likeCount
-//        self.isLiked = likeUser
-//    }
     
     
    override init(frame: CGRect) {

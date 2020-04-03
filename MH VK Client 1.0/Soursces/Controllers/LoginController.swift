@@ -2,7 +2,7 @@
 //  LoginViewController.swift
 //  MH VK Client 1.0
 //
-//  Created by Vit on 12/09/2019.
+//  Created by Vitaly Khomatov on 12/09/2019.
 //  Copyright © 2019 Macrohard. All rights reserved.
 //
 
@@ -51,48 +51,69 @@ class LoginViewController: UIViewController {
             return
         }
         
-
+        
         // автозаполняем поля логин и пароль и нажимаем на кнопку войти
-            if self.loadCount >= 2 {
+        if self.loadCount >= 1 {
             
-                self.Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
+            self.Loading(alpha: 0.2, duration: 0.8, delay: 0.8, speed: 0.8)
             
-                guard let savedUsername = self.loginTextField.text else { return }
-                guard let savedPassword = self.passwordTextField.text else { return }
+            guard let savedUsername = self.loginTextField.text else { return }
+            guard let savedPassword = self.passwordTextField.text else { return }
+            
+         //   guard let captha = self.passwordTextField.text else { return }
+
             
             let fillForm1 = String(format:"document.getElementsByName('email')[0].value='\(savedUsername)';")
             let fillForm2 = String(format:"document.getElementsByName('pass')[0].value='\(savedPassword)';")
             let pushButton = String(format:"document.getElementsByClassName('button')[0].click();")
             
+          //  let fillCaptcha = String(format:"document.getElementsByName('captcha')[0]';")
+         //   let captchaPic = String(format:"document.getElementsByClassName('pic')[0]();")
+
+            
+        //    let fillForm3 = String(format:"document.getElementsByName('captha')[0].value='\(captha)';")
+
+            
             DispatchQueue.main.async {
-
                 
-            self.webView.evaluateJavaScript(fillForm1, completionHandler: { (result, error) in
-                if error != nil {
-                    print("ФОРМА ВВОДА ЛОГИНА НЕ НАЙДЕНА: \(String(describing: error))")
-                } else if result != nil {
-                    print("ФОРМА ВВОДА ЛОГИНА НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result!))")}
-            })
-            
-            
-            self.webView.evaluateJavaScript(fillForm2, completionHandler: { (result, error) in
-                if error != nil {
-                    print("ФОРМА ВВОДА ПАРОЛЯ НЕ НАЙДЕНА: \(String(describing: error))")
-                } else if result != nil {
-                    print("ФОРМА ВВОДА ПАРОЛЯ НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result!))")}
-            })
-            
-            self.webView.evaluateJavaScript(pushButton, completionHandler: { (result, error) in
-                if error != nil {
-                    print("КНОПКА ВХОДА НЕ НАЙДЕНА: \(String(describing: error))")
-                } else /*if result != nil */ {
-                  //  print(result as Any)
-                    print("КНОПКА ВХОДА НАЙДЕНА И НАЖАТА")}// \(String(describing: result))")}
-
-            })
-            
-            self.pushLogin = true
-                }
+                
+                self.webView.evaluateJavaScript(fillForm1, completionHandler: { (result, error) in
+                    if error != nil {
+                        print("ФОРМА ВВОДА ЛОГИНА НЕ НАЙДЕНА: \(String(describing: error))")
+                    } else if result != nil {
+                        print("ФОРМА ВВОДА ЛОГИНА НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result!))")}
+                })
+                
+                
+                self.webView.evaluateJavaScript(fillForm2, completionHandler: { (result, error) in
+                    if error != nil {
+                        print("ФОРМА ВВОДА ПАРОЛЯ НЕ НАЙДЕНА: \(String(describing: error))")
+                    } else if result != nil {
+                        print("ФОРМА ВВОДА ПАРОЛЯ НАЙДЕНА И ЗАПОЛНЕНА: \(String(describing: result!))")}
+                })
+                
+                self.webView.evaluateJavaScript(pushButton, completionHandler: { (result, error) in
+                    if error != nil {
+                        print("КНОПКА ВХОДА НЕ НАЙДЕНА: \(String(describing: error))")
+                    } else /*if result != nil */ {
+                        //  print(result as Any)
+                        print("КНОПКА ВХОДА НАЙДЕНА И НАЖАТА")}// \(String(describing: result))")}
+                    
+                })
+                
+                
+//                self.webView.evaluateJavaScript(captchaPic, completionHandler: { (result, error) in
+//                    if error != nil {
+//                        print("КАРТИНКА НЕ НАЙДЕНА: \(String(describing: error))")
+//                    } else /*if result != nil */ {
+//                        //  print(result as Any)
+//                        print("КАРТИНКИ НАЙДЕНА")}// \(String(describing: result))")}
+//                    
+//                })
+//                
+                
+                self.pushLogin = true
+            }
             
         } else {
             print("СТРАНИЦА ЕЩЕ НЕ ЗАГРУЖЕНА ИЛИ НЕТ СВЯЗИ С ИНТЕРНЕТ")
@@ -158,12 +179,12 @@ class LoginViewController: UIViewController {
         let request = URLRequest(url: components.url!)
         
         DispatchQueue.main.async {
-
-        // удаляем куки, необходимые для автоматического входа
+            
+            // удаляем куки, необходимые для автоматического входа
             self.webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] cookie in
-            cookie.forEach { self?.webView.configuration.websiteDataStore.httpCookieStore.delete($0) }
-            print("КУКИ УДАЛЕНЫ")
-        }
+                cookie.forEach { self?.webView.configuration.websiteDataStore.httpCookieStore.delete($0) }
+                print("КУКИ УДАЛЕНЫ")
+            }
         }
         
         DispatchQueue.main.async {
