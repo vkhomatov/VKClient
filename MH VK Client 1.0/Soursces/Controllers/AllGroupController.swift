@@ -25,31 +25,31 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         tableView.delegate = self
         
         allGroupSearch.placeholder = "Search"
-
+        
         
         DispatchQueue.global().async {
-
+            
             self.networkService.searchGroups(userId: Session.shared.usedId, search: "А") { result in
-            switch result {
-            case let .success(groups):
-                self.allGroups = groups
-                guard !groups.isEmpty else { return }
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                switch result {
+                case let .success(groups):
+                    self.allGroups = groups
+                    guard !groups.isEmpty else { return }
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                case let .failure(error):
+                    print(error)
                 }
-            case let .failure(error):
-                print(error)
+            }
+            
+            
+            DispatchQueue.main.async {
+                
+                self.tableView.reloadData()
             }
         }
-        
-        
-        DispatchQueue.main.async {
-
-            self.tableView.reloadData()
-        }
-        }
     }
-        
+    
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
@@ -58,12 +58,14 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
     
     func searchBar(_ allCommunitesSearch: UISearchBar, textDidChange searchText: String) {
         
+        //  DispatchQueue.global().async {
         
-        networkService.searchGroups(userId: Session.shared.usedId, search: searchText) { result in
+        self.networkService.searchGroups(userId: Session.shared.usedId, search: searchText) { result in
             switch result {
             case let .success(groups):
                 self.searchGroups = groups
                 guard !groups.isEmpty else { return }
+                
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -72,15 +74,17 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
             case let .failure(error):
                 print(error)
             }
+            //     }
         }
-        
-        tableView.reloadData()
         
         if searchText.count < 1 {
             allGroupSearch.resignFirstResponder()
             search = false
             tableView.reloadData()
         }
+        
+        tableView.reloadData()
+        
         
     }
     
@@ -91,11 +95,22 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let cellZero = UITableViewCell()
         let cell = tableView.dequeueReusableCell(withIdentifier: "groupsCell", for: indexPath) as! GroupCell
         
         if search {
             
-            cell.configure(witch: searchGroups[indexPath.row])
+            //            if searchGroups.count > 0 && indexPath.row > 0 {
+            print("searchGroups.count : \(searchGroups.count)")
+            print("indexPath.row : \(indexPath.row)")
+            
+            if searchGroups.count > indexPath.row {
+                cell.configure(witch: searchGroups[indexPath.row])
+            } else  {
+                return cellZero
+            }
+            //   } //else {
+            //     print("Неуспеваю загрузить: \(searchGroups.count)") }
             
         } else {
             cell.configure(witch: allGroups[indexPath.row])
@@ -103,7 +118,7 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         }
         
         return cell
-}
-
-
+    }
+    
+    
 }
