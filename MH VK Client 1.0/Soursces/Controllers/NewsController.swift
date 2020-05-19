@@ -42,7 +42,7 @@ class NewsController: UITableViewController, UITableViewDataSourcePrefetching {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action:  #selector(getNewNews), for: .valueChanged)
         self.refreshControl = refreshControl
-        refreshControl.tintColor = UIColor(red:0.25, green:0.62, blue:0.85, alpha:1.0)
+        refreshControl.tintColor = .tintColor
         // refreshControl.attributedTitle = NSAttributedString(string: "Refreshing News ...")
         
         getNews(lastNewsDateG: nil, nextFromG: nil)

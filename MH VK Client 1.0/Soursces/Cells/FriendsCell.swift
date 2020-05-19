@@ -25,11 +25,18 @@ class FriendsCell: UITableViewCell {
         friendPic.image = nil
         friendName.textColor = .black
         isUserInteractionEnabled = true
+       // self.backgroundColor = .mainColor
+
     }
     
-    public func configure(witch friend: FriendVK) {
-        self.friendName.text = friend.fullName
-        self.friendPic.kf.setImage(with: URL(string: friend.mainPhoto))
+//    public func configure(witch friend: FriendVK) {
+//        self.friendName.text = friend.fullName
+//        self.friendPic.kf.setImage(with: URL(string: friend.mainPhoto))
+//    }
+    
+    public func configure(with viewModel: FriendViewModel) {
+        friendName.text = viewModel.friendName
+        friendPic.kf.setImage(with: URL(string: viewModel.friendPic))
     }
     
 }

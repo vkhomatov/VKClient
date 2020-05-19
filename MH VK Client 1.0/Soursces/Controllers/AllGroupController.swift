@@ -20,6 +20,8 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+     //   self.view.backgroundColor = .mainColor
+
         allGroupSearch.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
@@ -101,8 +103,8 @@ class AllGroupController: UITableViewController, UISearchBarDelegate {
         if search {
             
             //            if searchGroups.count > 0 && indexPath.row > 0 {
-            print("searchGroups.count : \(searchGroups.count)")
-            print("indexPath.row : \(indexPath.row)")
+           // print("searchGroups.count : \(searchGroups.count)")
+           // print("indexPath.row : \(indexPath.row)")
             
             if searchGroups.count > indexPath.row {
                 cell.configure(witch: searchGroups[indexPath.row])

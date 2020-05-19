@@ -14,9 +14,7 @@ class FriendAlbumsController: UICollectionViewController {
     private let networkService = NetworkService(token: Session.shared.accessToken)
     var activeFriend = FriendVK()
     var activeAlbum = FriendAlbum()
-    
     var albumsToken: NotificationToken?
-    
     let deleteIfMigration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
     
     //чтение списка альбомов выбранного друга из базы
@@ -26,13 +24,11 @@ class FriendAlbumsController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         //  загружаем альбомы из базы, если в существующей базе есть друзья
-             if albumsFromRealm.count > 0 {
-                 print("АЛЬБОМЫ ЗАГРУЖЕНЫ ИЗ БАЗЫ")
-                 collectionView.reloadData()
-             }
-        
+        if albumsFromRealm.count > 0 {
+            print("АЛЬБОМЫ ЗАГРУЖЕНЫ ИЗ БАЗЫ")
+            collectionView.reloadData()
+        }
         
         //загрузка списка альбомов выбранного друга из VK
         self.networkService.getFriendAlbums(userId: self.activeFriend.id) { [weak self] result in
@@ -44,8 +40,6 @@ class FriendAlbumsController: UICollectionViewController {
                 guard !friendAlbumsVK.isEmpty else {
                     print("НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК АЛЬБОМОВ ДРУГА: \(self.activeFriend.fullName)")
                     return }
-                
-                //  DispatchQueue.main.async {
                 
                 //удаляем старые записи об альбомах друга из базы и записываем полученные из VK
                 guard let realm = try? Realm(configuration: Realm.Configuration(deleteRealmIfMigrationNeeded: true)) else { fatalError() }
@@ -59,7 +53,6 @@ class FriendAlbumsController: UICollectionViewController {
                     friendVK.albums.append(objectsIn: friendAlbumsVK)
                     
                 }
-                //    }
                 
                 
             case let .failure(error):
@@ -72,8 +65,7 @@ class FriendAlbumsController: UICollectionViewController {
                 switch changes {
                 case .initial:
                     collectionView.reloadData()
-                case .update://(_, let deletion, let insertion, let modification):
-                    
+                case .update:
                     guard let self = self else { return }
                     print("ОБНОВЛЕНИЕ ДАННЫХ В РЕАЛМ АЛЬБОМЫ")
                     
@@ -98,7 +90,6 @@ class FriendAlbumsController: UICollectionViewController {
     }
     
     // MARK: UICollectionViewDataSource
-    
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }

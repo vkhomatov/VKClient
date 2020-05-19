@@ -38,6 +38,9 @@ class MyGroupController: UITableViewController, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       // self.view.backgroundColor = .mainColor
+
+        
         myGroupSearch.delegate = self
         tableView.dataSource = self
         tableView.delegate = self

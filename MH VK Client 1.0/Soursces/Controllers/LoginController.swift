@@ -145,6 +145,13 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // инициализац
+        self.view.backgroundColor = .mainColor
+        self.view1.backgroundColor = .mainColor
+        self.view2.backgroundColor = .mainColor
+        self.view3.backgroundColor = .mainColor
+
+
         
         titleLabel.text = "Enter your VK account"
         loginLabel.text = "Login"
@@ -154,9 +161,9 @@ class LoginViewController: UIViewController {
         passwordTextField.isSecureTextEntry = true
         loginButton.setTitle("Log In", for: .normal)
         
-        load1Label.alpha = 0.2
-        load2Label.alpha = 0.2
-        load3Label.alpha = 0.2
+        load1Label.alpha = 0
+        load2Label.alpha = 0
+        load3Label.alpha = 0
         
         let hideKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         
@@ -305,4 +312,10 @@ extension LoginViewController: WKNavigationDelegate {
         decisionHandler(.cancel)
     }
     
+}
+
+// пременимая к приложению реализация паттерна flightweight
+extension UIColor {
+    static let tintColor = UIColor(red:0.25, green:0.62, blue:0.85, alpha:1.0)
+    static let mainColor = UIColor(red:0.60, green:0.62, blue:0.85, alpha:1.0)
 }

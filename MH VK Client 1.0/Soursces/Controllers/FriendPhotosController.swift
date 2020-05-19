@@ -56,7 +56,8 @@ class FriendPhotosController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+      //  self.view.backgroundColor = .mainColor
+
      //   DispatchQueue.global().async {
 
         //загрузка фото из выбранного альбома
