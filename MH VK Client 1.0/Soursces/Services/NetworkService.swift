@@ -12,20 +12,39 @@
  import PromiseKit
  
  
+ protocol NetworkServiceInterface {
+    func NetworkRequest(text: String, count: Int?)
+ }
  
- class NetworkService {
+ 
+ class NetworkServiceProxy: NetworkServiceInterface {
+    func NetworkRequest(text: String, count: Int?) {
+        print("--- PROXY: \(text) : \(String(describing: count))")
+    }
     
+    let session: Alamofire.Session
+    init(session: Alamofire.Session) {
+        self.session = session
+    }
+
+ }
+ 
+
+ //----------------------------------------------------------
+ 
+ class NetworkService: NetworkServiceInterface {
+    
+    func NetworkRequest(text: String, count: Int?) {
+        print("\(text) : \(String(describing: count))")
+    }
     
     static let session: Alamofire.Session = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 20
         let session = Alamofire.Session(configuration: config)
+       // print("NetworkService: \(String(describing: session.request))")
         return session
     }()
-    
-    
-    
-    
     
     private let baseUrl = "https://api.vk.com"
     private let versionAPI = "5.92"
@@ -37,40 +56,8 @@
         self.token = token
     }
     
-    
-    // Получение списка друзей
-    //    func loadFriends(completion: ((Result<[FriendVK], Error>) -> Void)? = nil) {
-    //
-    //        let path = "/method/friends.get"
-    //
-    //        let params: Parameters = [
-    //            "access_token":  token,
-    //            "v": versionAPI,
-    //            "fields": "photo_100"
-    //        ]
-    //
-    //        //получение друзей пользователя
-    //            NetworkService.session.request(self.baseUrl + path, method: .get, parameters: params).responseJSON { response in
-    //            switch response.result {
-    //
-    //            case let .success(data):
-    //                let json = JSON(data)
-    //                let friendJSONs = json["response"]["items"].arrayValue
-    //                let friends = friendJSONs.map { FriendVK(from: $0) }
-    //                completion?(.success(friends))
-    //                print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
-    //
-    //            case let .failure(error):
-    //                completion?(.failure(error))
-    //                print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ \(error)")
-    //
-    //            }
-    //        }
-    //
-    //    }
-    
-    
-    
+    private let networkProxy = NetworkServiceProxy(session: session)
+
     //получение списка друзей Promise
     
     func loadFriendsPr() -> Promise<[FriendVK]> {
@@ -93,7 +80,9 @@
                     let friendJSONs = json["response"]["items"].arrayValue
                     let friends = friendJSONs.map { FriendVK(from: $0) }
                     resolver.fulfill(friends)
-                    print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
+                   // print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
+                    self.networkProxy.NetworkRequest(text: "СПИСОК ДРУЗЕЙ ЗАГРУЖЕН", count: friends.count)
+                    
                     
                 case let .failure(error):
                     resolver.reject(error)
@@ -104,7 +93,6 @@
             
         }
     }
-    
     
     
     //получение альбомов пользователя
@@ -129,7 +117,9 @@
                 let albumsJSONs = json["response"]["items"].arrayValue
                 let albums = albumsJSONs.map { FriendAlbum(from: $0) }
                 completion?(.success(albums))
-                print("АЛЬБОМЫ ПОЛЬЗОВАТЕЛЯ ЗАГРУЖЕНЫ: \(albums.count)")
+              //  print("АЛЬБОМЫ ПОЛЬЗОВАТЕЛЯ ЗАГРУЖЕНЫ: \(albums.count)")
+                self.networkProxy.NetworkRequest(text: "АЛЬБОМЫ ПОЛЬЗОВАТЕЛЯ ЗАГРУЖЕНЫ", count: albums.count)
+
             case let .failure(error):
                 completion?(.failure(error))
                 print("ОШИБКА ЗАГРУЗКИ АЛЬБОМОВ ПОЛЬЗОВАТЕЛЯ \(error)")
@@ -162,7 +152,9 @@
                 let photosJSONs = json["response"]["items"].arrayValue
                 let photos = photosJSONs.map { FriendPhoto(from: $0) }
                 completion?(.success(photos))
-                print("ФОТО ИЗ ТЕКУЩЕГО АЛЬБОМА ЗАГРУЖЕНЫ: \(photos.count)")
+                self.networkProxy.NetworkRequest(text: "ФОТО ИЗ ТЕКУЩЕГО АЛЬБОМА ЗАГРУЖЕНЫ", count: photos.count)
+
+               // print("ФОТО ИЗ ТЕКУЩЕГО АЛЬБОМА ЗАГРУЖЕНЫ: \(photos.count)")
                 
             case let .failure(error):
                 completion?(.failure(error))
@@ -192,7 +184,9 @@
                 let groupJSONs = json["response"]["items"].arrayValue
                 let groups = groupJSONs.map { GroupVK(from: $0) }
                 completion?(.success(groups))
-                print("ГРУППЫ ПОЛЬЗОВАТЕЛЯ ЗАГРУЖЕНЫ: \(groups.count)")
+              //  print("ГРУППЫ ПОЛЬЗОВАТЕЛЯ ЗАГРУЖЕНЫ: \(groups.count)")
+                self.networkProxy.NetworkRequest(text: "ГРУППЫ ПОЛЬЗОВАТЕЛЯ ЗАГРУЖЕНЫ", count: groups.count)
+
                 
             case let .failure(error):
                 completion?(.failure(error))
@@ -226,8 +220,11 @@
                 let groups = groupJSONs.map { GroupVK(from: $0) }
                 completion?(.success(groups))
                 print("ГРУППЫ ПО ПОИСКОВОМУ ЗАПРОСУ \(search) ЗАГРУЖЕНЫ")
+                self.networkProxy.NetworkRequest(text: "ГРУППЫ ПО ПОИСКОВОМУ ЗАПРОСУ ЗАГРУЖЕНЫ", count: groups.count)
+
             case let .failure(error):
                 completion?(.failure(error))
+                
                 print("ОШИБКА ЗАГРУЗКИ ГРУПП ПО ПОИСКОВОМУ ЗАПРОСУ \(search)")
                 
             }
@@ -235,39 +232,6 @@
         }
         
     }
-    
-    
-    
-    // MARK: - Загрузка новостей в один объект
-    
-    //    func loadNews(completion: ((Result<NewsVK, Error>) -> Void)? = nil) {
-    //        let path = "/method/newsfeed.get"
-    //
-    //        let params: Parameters = [
-    //            "access_token":  Session.shared.accessToken,
-    //            "v": versionAPI,
-    //            "count": 100,
-    //            //"filters": "post, wall_photo"
-    //        ]
-    //
-    //        NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
-    //            switch response.result {
-    //            case let .success(data):
-    //                let json = JSON(data)
-    //                let newsVK = NewsVK(from: json["response"])
-    //
-    //                completion?(.success(newsVK))
-    //                print("ОБЪЕКТ NEWS ЗАГРУЖЕН")
-    //
-    //            case let .failure(error):
-    //                completion?(.failure(error))
-    //                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS")
-    //
-    //            }
-    //        }
-    //
-    //    }
-    //
     
     
     // MARK: - Загрузка новостей в три потока
@@ -283,6 +247,7 @@
             "start_from": nextFrom ?? ""
             //"filters": "post, wall_photo"
         ]
+        
         
         NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
             switch response.result {
@@ -318,7 +283,8 @@
                 //Работает если только сделать во так - то есть использовать notify
                 dispatchGroup.notify(queue: DispatchQueue.main) {
                     completion(.success((items, profiles, groups, startFrom)))
-                    print("ОБЪЕКТЫ ITEMS, PROFILES и GROUPS ЗАГРУЖЕНЫ")
+                    self.networkProxy.NetworkRequest(text: "ОБЪЕКТЫ ITEMS, PROFILES и GROUPS ЗАГРУЖЕНЫ", count: nil)
+                  //  print("ОБЪЕКТЫ ITEMS, PROFILES и GROUPS ЗАГРУЖЕНЫ")
                     
                 }
                 
@@ -336,3 +302,69 @@
  
  
  
+
+ 
+ // Получение списка друзей
+    //    func loadFriends(completion: ((Result<[FriendVK], Error>) -> Void)? = nil) {
+    //
+    //        let path = "/method/friends.get"
+    //
+    //        let params: Parameters = [
+    //            "access_token":  token,
+    //            "v": versionAPI,
+    //            "fields": "photo_100"
+    //        ]
+    //
+    //        //получение друзей пользователя
+    //            NetworkService.session.request(self.baseUrl + path, method: .get, parameters: params).responseJSON { response in
+    //            switch response.result {
+    //
+    //            case let .success(data):
+    //                let json = JSON(data)
+    //                let friendJSONs = json["response"]["items"].arrayValue
+    //                let friends = friendJSONs.map { FriendVK(from: $0) }
+    //                completion?(.success(friends))
+    //                print("СПИСОК ДРУЗЕЙ ЗАГРУЖЕН: \(friends.count)")
+    //
+    //            case let .failure(error):
+    //                completion?(.failure(error))
+    //                print("ОШИБКА ЗАГРУЗКИ СПИСКА ДРУЗЕЙ \(error)")
+    //
+    //            }
+    //        }
+    //
+    //    }
+    
+
+ // MARK: - Загрузка новостей в один объект
+    
+    //    func loadNews(completion: ((Result<NewsVK, Error>) -> Void)? = nil) {
+    //        let path = "/method/newsfeed.get"
+    //
+    //        let params: Parameters = [
+    //            "access_token":  Session.shared.accessToken,
+    //            "v": versionAPI,
+    //            "count": 100,
+    //            //"filters": "post, wall_photo"
+    //        ]
+    //
+    //        NetworkService.session.request(baseUrl + path, method: .get, parameters: params).responseJSON { response in
+    //            switch response.result {
+    //            case let .success(data):
+    //                let json = JSON(data)
+    //                let newsVK = NewsVK(from: json["response"])
+    //
+    //                completion?(.success(newsVK))
+    //                print("ОБЪЕКТ NEWS ЗАГРУЖЕН")
+    //
+    //            case let .failure(error):
+    //                completion?(.failure(error))
+    //                print("ОШИБКА ЗАГРУЗКИ ОБЪЕКТА NEWS")
+    //
+    //            }
+    //        }
+    //
+    //    }
+    //
+    
+    

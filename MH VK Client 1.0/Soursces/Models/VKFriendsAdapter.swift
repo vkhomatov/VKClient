@@ -23,6 +23,8 @@ class VKFriendsAdapter {
     var alfGroupsFriends = [[FriendVK]]()
     var friendsAlf = [Character]()
     
+   // weak var friendsController: FriendsController?
+    
     
     func GetFriendsFromRealm(table: UITableView?) {
         
